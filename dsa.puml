@@ -1,35 +1,66 @@
 @startuml
 
-class EMVTagParser
-abstract AbstractCollection
-interface list
-interface Collection
+class RestExceptionHandler
+class WebappController
+class APIErrorResponse
+interface EMVTag
+class EMVTagImpl
+interface TLVDecoder
+class TLVDecoderImpl
+class EMVTagModel
 class ApiGateway
-interface ImageClient
-interface PriceClient
-class ImageClientImpl
-class PriceClientImpl
 
-List <|-- EMVTagParser
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- EMVTagParser
-EMVTagParser <|-- ArrayList
-
-class ArrayList {
-    Object[] elementData
-    size()
-    }
-
-class EMVTagParser {
-    Object[] elementData
-    findByByteArray()
-    findByKeyword()
-    }
+EMVTag <|-- EMVTagImpl
+TLVDecoder <|-- TLVDecoderImpl
+WebappController <|-- ApiGateway
+ApiGateway <|-- APIErrorResponse
+WebappController <|-- RestExceptionHandler
 
 class ApiGateway {
-    getsdads()
-    }
+    getDecodedTLVData():TLVDecoder
+    getEMVTagData():EMVTag
+}
+
+interface TLVDecoder {
+    decodeTLVData(String):LinkedList<String>
+}
+
+class TLVDecoderImpl {
+    decodeTLVData(String):LinkedList<String>
+}
+
+class APIErrorResponse{
+    status: HttpStatus
+    errorCode: String
+    message: String
+    detail: String
+}
+
+class EMVTagImpl {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
+
+class WebappController {
+    EMVTagSearch(String):EMVTag
+    TLVDecoder(String):TLVDecoder
+}
+
+class RestExceptionHandler {
+    logger: LoggerFactory.getLogger(javaClass)
+    resolveException(exception, request):APIErrorResponse
+    logError(message, exception, request):void
+}
+
+class EMVTagModel {
+    id: Integer
+    name: String
+    description: String
+}
+
+interface EMVTag {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
 
 @enduml
