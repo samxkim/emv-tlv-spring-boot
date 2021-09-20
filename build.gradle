@@ -10,7 +10,11 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
+	flatDir {
+		dirs 'libs'
+	}
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 ext {
@@ -24,6 +28,9 @@ dependencies {
 	implementation 'com.vaadin:vaadin-spring-boot-starter:21.0.0'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.4'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
+	implementation("com.google.guava:guava:30.1.1-jre")
+	implementation 'com.github.KwonYongkil:javaemvreader:-SNAPSHOT'
+
 }
 
 dependencyManagement {

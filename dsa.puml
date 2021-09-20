@@ -1,0 +1,35 @@
+@startuml
+
+class EMVTagParser
+abstract AbstractCollection
+interface list
+interface Collection
+class ApiGateway
+interface ImageClient
+interface PriceClient
+class ImageClientImpl
+class PriceClientImpl
+
+List <|-- EMVTagParser
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- EMVTagParser
+EMVTagParser <|-- ArrayList
+
+class ArrayList {
+    Object[] elementData
+    size()
+    }
+
+class EMVTagParser {
+    Object[] elementData
+    findByByteArray()
+    findByKeyword()
+    }
+
+class ApiGateway {
+    getsdads()
+    }
+
+@enduml
