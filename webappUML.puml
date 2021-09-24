@@ -1,0 +1,116 @@
+@startuml
+
+class RestExceptionHandler
+class WebAppController
+class APIErrorResponse
+interface EMVTagService
+class EMVTagServiceImpl
+interface TLVDecoderService
+class TLVDecoderServiceImpl
+class EMVTagModel
+class APIGateway
+class UserModel
+class UserController
+class JWTAuthorizationFilter
+interface TagRepository
+class TagRepositoryImpl
+class WebSecurityConfig
+interface UserRepository
+
+UserController --|> UserRepository
+WebSecurityConfig --|> JWTAuthorizationFilter
+JWTAuthorizationFilter <|-- TagRepository
+TagRepository <|-- TagRepositoryImpl
+WebSecurityConfig <|-- APIGateway
+JWTAuthorizationFilter <|-- UserController
+EMVTagService <|-- EMVTagServiceImpl
+TLVDecoderService <|-- TLVDecoderServiceImpl
+WebAppController <|-- APIGateway
+APIGateway <|-- APIErrorResponse
+WebAppController <|-- RestExceptionHandler
+EMVTagService --|> TagRepositoryImpl
+
+JWTAuthorizationFilter --|> TagRepository
+JWTAuthorizationFilter --|> WebSecurityConfig
+JWTAuthorizationFilter --|> UserController
+
+interface UserRepository extends CrudRepository {
+    createJWTToken(UserModel): bool
+}
+
+class JWTAuthorizationFilter {
+    isJWTTokenRequired(): bool
+    validateJWTToken(token<JWTToken>): bool
+}
+
+class UserModel {
+    private username: String
+    private password: String
+    company_name: String
+    email: String
+    token: JWTToken
+}
+
+class UserController {
+    private PasswordEncoder BCryptPasswordEncoder
+    private UserModel User
+}
+
+class TagRepository {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
+
+interface TagRepositoryImpl {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
+
+class APIGateway {
+    getDecodedTLVData():TLVDecoderService
+    getEMVTagData():EMVTagService
+}
+
+interface TLVDecoderService {
+    decodeTLVData(String):LinkedList<String>
+}
+
+class TLVDecoderServiceImpl {
+    decodeTLVData(String):LinkedList<String>
+}
+
+class APIErrorResponse{
+    status: HttpStatus
+    errorCode: String
+    message: String
+    detail: String
+}
+
+class EMVTagServiceImpl {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
+
+class WebAppController {
+    EMVTagSearch(String):EMVTagService
+    TLVDecoderService(String):TLVDecoderService
+}
+
+class RestExceptionHandler {
+    logger: LoggerFactory.getLogger(javaClass)
+    resolveException(exception, request):APIErrorResponse
+    logError(message, exception, request):void
+}
+
+class EMVTagModel {
+    id: Integer
+    name: String
+    description: String
+}
+
+interface EMVTagService {
+    getEMVTag(String):String
+    getKeyword(String):String
+}
+
+@enduml
