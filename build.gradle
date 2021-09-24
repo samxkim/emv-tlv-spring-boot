@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'com.vaadin' version '0.14.6.0'
+	//id 'com.vaadin' version '0.14.6.0'
 	id 'java'
 }
 
@@ -18,7 +18,7 @@ repositories {
 }
 
 ext {
-	set('vaadinVersion', "14.6.8")
+	//set('vaadinVersion', "14.6.8")
 }
 
 dependencies {
@@ -26,7 +26,7 @@ dependencies {
 	implementation 'commons-logging:commons-logging:1.2'
 	runtimeOnly 'com.h2database:h2:1.4.200'
 	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.4'
-	implementation 'com.vaadin:vaadin-spring-boot-starter:21.0.1'
+	//implementation 'com.vaadin:vaadin-spring-boot-starter:21.0.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.4'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
 	implementation("com.google.guava:guava:30.1.1-jre")
@@ -37,7 +37,7 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
+		//mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
 	}
 }
 
