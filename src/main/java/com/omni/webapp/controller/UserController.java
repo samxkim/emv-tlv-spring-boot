@@ -1,5 +1,6 @@
 package com.omni.webapp.controller;
 
+import com.omni.webapp.models.UserRestModelResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,7 +13,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserRest createUser (@RequestMapping UserDetailRequestModel userDetails) {
+    public UserRestModelResponse createUser (@RequestMapping UserDetailRequestModel userDetails) {
         return "Test";
     }
 
@@ -20,7 +21,7 @@ public class UserController {
     public String updateUser() {
         return "Rest";
     }
-    
+
     @DeleteMapping
     public String deleteUser() {
         return "Rest";
