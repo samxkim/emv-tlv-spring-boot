@@ -1,6 +1,5 @@
 package com.omni.webapp.models;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Table(name = "users")
 public class UserEntity implements Serializable {
 
-    private static final long serialVersionUID = 0;
+    private static final long serialVersionUID = -5181098458746138422L;
 
     @Id
     @GeneratedValue
@@ -21,12 +20,10 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String userId;
 
-    @Column(nullable = false, length = 50)
-    private String firstName;
-    @Column(nullable = false, length = 50)
-    private String lastName;
+    @Column(nullable = false)
+    private String userName;
 
-    @Column(nullable = false, length = 120, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String encryptedPassword;
