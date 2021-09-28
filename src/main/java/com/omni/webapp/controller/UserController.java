@@ -1,5 +1,6 @@
 package com.omni.webapp.controller;
 
+import com.omni.webapp.models.UserRestModelRequest;
 import com.omni.webapp.models.UserRestModelResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserRestModelResponse createUser (@RequestMapping UserDetailRequestModel userDetails) {
+    public UserRestModelResponse createUser (UserRestModelRequest userDetails) {
         return "Test";
     }
 
