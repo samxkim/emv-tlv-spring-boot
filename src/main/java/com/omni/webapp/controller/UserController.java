@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public UserRestModelResponse createUser (UserRestModelRequest userDetails) {
-        return "Test";
+        return null;
     }
 
     @PutMapping

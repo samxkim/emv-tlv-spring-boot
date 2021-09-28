@@ -25,7 +25,7 @@ public class TLVDecoderImpl implements TLVDecoder{
 
     @Override
     public List<List<String>> decodeTLVData(String data) {
-        List<DecodedData> decoded = new RootDecoder().decode("6F1A840E315041592E5359532E4444463031A5088801025F2D02656E", "emv", "constructed");
+        List<DecodedData> decoded = new RootDecoder().decode(data, "emv", "constructed");
         List<List<String>> newList = new ArrayList<>();
         translateToReadableList(decoded, newList);
         Collections.reverse(newList);
