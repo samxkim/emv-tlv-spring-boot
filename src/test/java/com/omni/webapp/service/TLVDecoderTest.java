@@ -27,4 +27,20 @@ class TLVDecoderTest {
         tlvDecoder.translateToReadableList(decoded, newList);
         assertEquals(list2,list1);
     }
+
+    @Test
+    void decodeTLVDataUnevenNumberHexDigits() {
+        String data = "123456789";
+        Throwable exception = assertThrows(RuntimeException.class,
+                ()->{tlvDecoder.decodeTLVData(data);} );
+        assertEquals("Uneven number(9) of hex digits passed to hex2byte.", exception.getMessage());
+    }
+
+    @Test
+    void decodeTLVDataUneven() {
+        String data = "123456789000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        Throwable exception = assertThrows(RuntimeException.class,
+                ()->{tlvDecoder.decodeTLVData(data);} );
+        assertEquals("Uneven number(87) of hex digits passed to hex2byte.", exception.getMessage());
+    }
 }
