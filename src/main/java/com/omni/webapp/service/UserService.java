@@ -1,7 +1,7 @@
 package com.omni.webapp.service;
 
-import com.omni.webapp.models.UserDto;
+import com.omni.webapp.models.User;
 
 public interface UserService {
-    UserDto createUser(UserDto user);
+    User createUser(User user);
 }

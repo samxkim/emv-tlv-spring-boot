@@ -1,9 +1,6 @@
 package com.omni.webapp.models;
 
-import java.io.Serializable;
-
-public class UserDto implements Serializable {
-    private static final long serialVersionUID = -8851311327936217725L;
+public class User {
     private long id;
     private String userId;
     private String userName;

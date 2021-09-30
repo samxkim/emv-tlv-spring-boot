@@ -1,6 +1,6 @@
 package com.omni.webapp.service;
 
-import com.omni.webapp.models.UserDto;
+import com.omni.webapp.models.User;
 import com.omni.webapp.models.UserEntity;
 import com.omni.webapp.models.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService{
     UserRepository userRepository;
 
     @Override
-    public UserDto createUser(UserDto user) {
+    public User createUser(User user) {
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(user, userEntity);
 
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService{
 
         UserEntity userDetails = userRepository.save(userEntity);
 
-        UserDto returnUser = new UserDto();
+        User returnUser = new User();
         BeanUtils.copyProperties(userDetails, returnUser);
 
         return returnUser;

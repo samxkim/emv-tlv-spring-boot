@@ -2,6 +2,9 @@ package com.omni.webapp.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import java.time.LocalDateTime;
 
 @Entity
 public class Tag {
@@ -11,6 +14,20 @@ public class Tag {
     private String name;
 
     private String description;
+
+    private LocalDateTime created_date;
+
+    private String created_by;
+
+    private String update_date;
+
+    private Boolean isactive;
+
+    @OneToOne
+    private TagExamplesEntity tagexamples_id_fk;
+
+    @ManyToOne
+    private TagGroupsEntity idtaggroups_id_fk;
 
     public Integer getId() {
         return id;

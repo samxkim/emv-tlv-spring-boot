@@ -1,9 +1,10 @@
 package com.omni.webapp.models;
 
-public class UserRestModelResponse {
+public class UserRestModelRequestDto {
     private String userId;
     private String userName;
     private String email;
+    private String password;
     private String companyName;
 
     public String getUserId() {
@@ -36,5 +37,13 @@ public class UserRestModelResponse {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

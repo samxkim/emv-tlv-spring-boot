@@ -1,20 +1,13 @@
 package com.omni.webapp.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serializable;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class UserEntity implements Serializable {
-
-    private static final long serialVersionUID = -5181098458746138422L;
+public class UserEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
     @Column(nullable = false)
@@ -26,6 +19,10 @@ public class UserEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String companyName;
+
+    @Column(nullable = false)
     private String encryptedPassword;
 
     public long getId() {

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class EVTTags {
+public class FileToTest {
     private List<DecodedData> decoded;
     private String s;
 

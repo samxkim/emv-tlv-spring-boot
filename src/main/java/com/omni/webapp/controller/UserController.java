@@ -1,7 +1,7 @@
 package com.omni.webapp.controller;
 
-import com.omni.webapp.models.UserRestModelRequest;
-import com.omni.webapp.models.UserRestModelResponse;
+import com.omni.webapp.models.UserRestModelRequestDto;
+import com.omni.webapp.models.UserRestModelResponseDto;
 import com.omni.webapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserRestModelResponse createUser (UserRestModelRequest userDetails) {
+    public UserRestModelResponseDto createUser (UserRestModelRequestDto userDetails) {
         return null;
     }
 
