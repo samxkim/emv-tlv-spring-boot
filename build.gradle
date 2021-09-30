@@ -24,8 +24,7 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.5.4'
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.5.4'
-	implementation 'org.springframework.boot:spring-boot-starter-web-services:2.5.4'
+	implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer:3.5.4'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.25'
 	implementation 'commons-logging:commons-logging:1.2'
@@ -38,7 +37,6 @@ dependencies {
 	implementation('com.google.guava:guava:31.0.1-jre')
 	implementation 'com.payneteasy:ber-tlv:1.0-11'
 	implementation group: 'io.github.binaryfoo', name: 'emv-bertlv', version: '0.1.8'
-	runtimeOnly 'com.h2database:h2'
 
 }
 
