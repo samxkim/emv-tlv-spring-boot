@@ -1,6 +1,7 @@
 package com.omni.webapp.models;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +25,12 @@ public class UserEntity{
 
     @Column(nullable = false)
     private String encryptedPassword;
+
+    @Column(nullable = false)
+    private Boolean isActive;
+
+    @Column(nullable = false)
+    private LocalDateTime created_date;
 
     public long getId() {
         return id;
