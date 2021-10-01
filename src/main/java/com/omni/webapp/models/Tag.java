@@ -5,6 +5,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 public class Tag {
@@ -22,7 +23,7 @@ public class Tag {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
-    private LocalDateTime created_date;
+    private Date created_date;
 
     @Column(name = "created_by")
     private String created_by;
@@ -30,16 +31,16 @@ public class Tag {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_date")
-    private LocalDateTime update_date;
+    private Date update_date;
 
     @Column(name = "isActive")
-    private Boolean isactive;
+    private Boolean isActive;
 
     @OneToOne
-    private TagExamplesEntity tagexamplesfk;
+    private TagExamplesEntity tagExamplesFK;
 
     @ManyToOne
-    private TagGroupsEntity taggroupsfk;
+    private TagGroupsEntity tagGroupsFK;
 
     public String getName() {
         return name;
