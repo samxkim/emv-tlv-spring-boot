@@ -4,7 +4,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -41,6 +40,13 @@ public class Tag {
 
     @ManyToOne
     private TagGroupsEntity tagGroupsFK;
+
+    public Tag(String name, String description, String created_by, Boolean isActive) {
+        this.name = name;
+        this.description = description;
+        this.created_by = created_by;
+        this.isActive = isActive;
+    }
 
     public String getName() {
         return name;
