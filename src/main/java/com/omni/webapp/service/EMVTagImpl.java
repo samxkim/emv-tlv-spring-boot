@@ -10,7 +10,6 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Service
 public class EMVTagImpl implements EMVTag {
@@ -37,8 +36,15 @@ public class EMVTagImpl implements EMVTag {
     }
 
     @Override
-    public Tag getEMVTagByKeyword(String value) {
-        // todo
-        return null;
+    public Optional<Object> getEMVTagByKeyword(String value) {
+        try {
+            Optional<Tag> returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByDescriptionContainingIgnoreCase(value)).orElseThrow(
+                    // anonymous class?
+                    () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
+            System.out.println(returnedTag);
+        } catch (NullPointerException e) {
+            System.out.println("Tag description %s not found\n");
+        }
+        return Optional.empty();
     }
 }
