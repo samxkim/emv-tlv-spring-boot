@@ -48,6 +48,16 @@ public class Tag {
         this.isActive = isActive;
     }
 
+    public Tag(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.created_by = "Admin";
+        this.isActive = true;
+    }
+
+    public Tag() {
+    }
+
     public String getName() {
         return name;
     }

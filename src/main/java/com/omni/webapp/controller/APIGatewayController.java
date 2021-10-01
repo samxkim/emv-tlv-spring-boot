@@ -1,6 +1,7 @@
 package com.omni.webapp.controller;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -27,9 +28,29 @@ public class APIGatewayController {
     }
 
     public void insertInitialTags() {
-        // TODO: 10/1/2021  create static tags to iterate upon
-        Tag t1 = new Tag("Name", "Description", "createdby", true);
-        List<Tag> tags = List.of(t1);
+        //Tag t1 = new Tag("Name", "Description", "createdby", true);
+        List<Tag> tags = new ArrayList<>();
+
+        // Iterates through each static constant in the specified class
+        for (Field f : InitialEMVTags.class.getDeclaredFields()) {
+            f.setAccessible(true);
+            //String name = f.getName();
+            //System.out.println(name);
+            try {
+                Tag currentTag = (Tag) f.get(null);
+                if (!tagRepository.findByNameNotNull(currentTag.getName())) {
+                    //System.out.println("FUCK");
+                    tags.add(currentTag);
+                }
+//                else if (!tagRepository.findByNameNotNull(currentTag.getName())) {
+//                    tags.add(currentTag);
+//                }
+                //System.out.println(value.getName());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        //System.out.println(tags);
         tagRepository.saveAll(tags);
     }
 
