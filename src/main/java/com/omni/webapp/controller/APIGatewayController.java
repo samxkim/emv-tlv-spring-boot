@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.omni.webapp.models.*;
+import com.omni.webapp.service.EMVTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,14 @@ public class APIGatewayController {
     @Autowired
     private TagRepository tagRepository;
 
+    @Autowired
+    private EMVTag emvTag;
+
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
         final String template = "Hello, %s!";
         final AtomicLong counter = new AtomicLong();
+        emvTag.getEMVTag("06dsadsa");
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 

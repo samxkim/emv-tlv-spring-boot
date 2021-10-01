@@ -1,8 +1,10 @@
 package com.omni.webapp.service;
 
-import java.util.List;
+import com.omni.webapp.models.Tag;
 
-public interface EMVTag<T> {
-    List<String> getEMVTag(T value);
-    String getKeyword(T value);
+import java.util.Optional;
+
+public interface EMVTag {
+    Optional<Tag> getEMVTag(String value);
+    Tag getEMVTagByKeyword(String value);
 }

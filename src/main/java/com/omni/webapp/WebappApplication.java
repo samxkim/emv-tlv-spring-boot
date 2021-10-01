@@ -13,8 +13,6 @@ import java.util.List;
 
 @SpringBootApplication
 public class WebappApplication {
-	@Autowired
-	private static TagRepository tagRepository;
 
 	public static void main(String[] args) {
 
