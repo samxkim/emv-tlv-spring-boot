@@ -1,5 +1,7 @@
 package com.omni.webapp.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -10,9 +12,6 @@ public class UserEntity{
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-
-    @Column(nullable = false)
-    private String userId;
 
     @Column(nullable = false)
     private String userName;
@@ -29,7 +28,9 @@ public class UserEntity{
     @Column(nullable = false)
     private Boolean isActive;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
     private LocalDateTime created_date;
 
     public long getId() {
@@ -38,14 +39,6 @@ public class UserEntity{
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {

@@ -1,19 +1,18 @@
 package com.omni.webapp.models;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Entity
 public class TagGroupsEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private long taggroups_id;
+    @Column(nullable = false, unique = true)
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column
-    private String taggroups_name;
-
-    @Column
-    private String taggroups_description;
+    private String description;
 }

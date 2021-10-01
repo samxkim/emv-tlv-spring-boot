@@ -2,12 +2,14 @@ package com.omni.webapp.models;
 
 import javax.persistence.*;
 
+@Entity
 public class TagExamplesEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private long tagexamples_id;
+    @Column(nullable = false, unique = true)
+    private long id;
 
-    @Column()
-    private Lob tagexamples_data;
+    @Column(columnDefinition = "TEXT")
+    private String data;
 }

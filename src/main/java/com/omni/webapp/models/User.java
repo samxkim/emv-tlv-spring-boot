@@ -2,7 +2,6 @@ package com.omni.webapp.models;
 
 public class User {
     private long id;
-    private String userId;
     private String userName;
     private String email;
     private String companyName;
@@ -15,14 +14,6 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {
