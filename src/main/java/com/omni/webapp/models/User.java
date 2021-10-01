@@ -7,6 +7,7 @@ public class User {
     private String companyName;
     private String password;
     private String encryptedPassword;
+    // TODO: 10/1/2021 add apikey
 
     public long getId() {
         return id;
