@@ -37,7 +37,7 @@ public class EMVTagImpl implements EMVTag {
 
     @Override
     public Optional<Tag> getEMVTagByKeyword(String value) {
-        /// TODO: 10/1/2021 make it so it returns a list of entries instead of just one 
+        /// TODO: 10/1/2021 make it so it returns a list of entries instead of just one
         Optional<Tag> returnedTag = Optional.empty();
         try {
             returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByDescriptionContainingIgnoreCase(value)).orElseThrow(
