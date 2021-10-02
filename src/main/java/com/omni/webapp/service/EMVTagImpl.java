@@ -36,15 +36,17 @@ public class EMVTagImpl implements EMVTag {
     }
 
     @Override
-    public Optional<Object> getEMVTagByKeyword(String value) {
+    public Optional<Tag> getEMVTagByKeyword(String value) {
+        /// TODO: 10/1/2021 make it so it returns a list of entries instead of just one 
+        Optional<Tag> returnedTag = Optional.empty();
         try {
-            Optional<Tag> returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByDescriptionContainingIgnoreCase(value)).orElseThrow(
+            returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByDescriptionContainingIgnoreCase(value)).orElseThrow(
                     // anonymous class?
                     () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
             System.out.println(returnedTag);
         } catch (NullPointerException e) {
             System.out.println("Tag description %s not found\n");
         }
-        return Optional.empty();
+        return returnedTag;
     }
 }

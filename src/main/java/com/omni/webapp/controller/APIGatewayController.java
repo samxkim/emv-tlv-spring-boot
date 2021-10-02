@@ -30,6 +30,8 @@ public class APIGatewayController {
         final String template = "Hello, %s!";
         final AtomicLong counter = new AtomicLong();
         emvTag.getEMVTag("06dsadsa");
+        emvTag.getEMVTagByKeyword("OID");
+        emvTag.getEMVTagByKeyword("DSAIODMASLKDKASLDMAS");
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 

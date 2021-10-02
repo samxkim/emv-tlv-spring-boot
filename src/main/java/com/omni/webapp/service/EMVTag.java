@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface EMVTag {
     Optional<Tag> getEMVTag(String value);
-    Optional<Object> getEMVTagByKeyword(String value);
+    Optional<Tag> getEMVTagByKeyword(String value);
 }
