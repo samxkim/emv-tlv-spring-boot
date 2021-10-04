@@ -15,7 +15,7 @@ import java.util.Optional;
 public class EMVTagImpl implements EMVTag {
 
     @Autowired
-    TagRepository tagRepository;
+     TagRepository tagRepository;
 
     private final Logger logger = LoggerFactory.getLogger(TypeData.ClassName.class);
 

@@ -11,7 +11,7 @@ public class UserEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String userName;
@@ -21,6 +21,9 @@ public class UserEntity{
 
     @Column(nullable = false)
     private String companyName;
+
+    @org.springframework.data.annotation.Transient
+    private String password;
 
     @Column(nullable = false)
     private String encryptedPassword;

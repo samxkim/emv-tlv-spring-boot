@@ -1,7 +1,7 @@
 package com.omni.webapp.models;
 
 public class User {
-    private long id;
+    private Long id;
     private String userName;
     private String email;
     private String companyName;

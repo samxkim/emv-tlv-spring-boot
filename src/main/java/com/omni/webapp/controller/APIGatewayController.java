@@ -1,8 +1,5 @@
 package com.omni.webapp.controller;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.omni.webapp.models.*;
@@ -19,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class APIGatewayController {
     private static final Logger LOG = LoggerFactory.getLogger(APIGatewayController.class);
 
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
+    private final EMVTag emvTag;
 
     @Autowired
-    private EMVTag emvTag;
+    public APIGatewayController(TagRepository tagRepository, EMVTag emvTag) {
+        this.tagRepository = tagRepository;
+        this.emvTag = emvTag;
+    }
 
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
