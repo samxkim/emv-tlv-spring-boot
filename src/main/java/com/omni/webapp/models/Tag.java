@@ -4,6 +4,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -33,14 +35,18 @@ public class Tag {
     @Column(name = "update_date")
     private Date update_date;
 
-    @Column(name = "isActive")
+    @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "tagExamplesEntity")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tag_example_id")
     private TagExamplesEntity tagExamplesFK;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tagGroupsEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TagGroupsEntity> tagGroupsEntityList;
+    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "tag")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tag_group", joinColumns = @JoinColumn(name = "tag_id"),
+    inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private List<TagGroupsEntity> tagGroupsEntityList = new ArrayList<>();
 
     public Tag(String name, String description, String created_by, Boolean isActive) {
         this.name = name;

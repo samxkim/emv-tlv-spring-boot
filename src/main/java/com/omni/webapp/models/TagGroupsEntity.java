@@ -1,6 +1,9 @@
 package com.omni.webapp.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class TagGroupsEntity {
@@ -16,9 +19,10 @@ public class TagGroupsEntity {
     @Column
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tagGroupsEntity_id")
-    private TagGroupsEntity tagGroupsEntity;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "tagGroupsEntityList")
+    private List<Tag> tag = new ArrayList<>();
+
 
     public Long getId() {
         return id;
@@ -42,13 +46,5 @@ public class TagGroupsEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public TagGroupsEntity getTagGroupsEntity() {
-        return tagGroupsEntity;
-    }
-
-    public void setTagGroupsEntity(TagGroupsEntity tagGroupsEntity) {
-        this.tagGroupsEntity = tagGroupsEntity;
     }
 }
