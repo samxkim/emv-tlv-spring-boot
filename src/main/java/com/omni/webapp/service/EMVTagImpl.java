@@ -5,45 +5,46 @@ import com.omni.webapp.models.TagRepository;
 import javassist.bytecode.stackmap.TypeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EMVTagImpl implements EMVTag {
 
-    @Autowired
-     TagRepository tagRepository;
+    final TagRepository tagRepository;
 
     private final Logger logger = LoggerFactory.getLogger(TypeData.ClassName.class);
 
+    public EMVTagImpl(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
+
     @Override
     public Optional<Tag> getEMVTag(String value) {
-        // store string value
-        // 9F01
-        /// TODO: 10/1/2021 fix up
         try {
-            Optional<Tag> returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
-                    // anonymous class?
+            return Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("EMVTag %s not found.", value))));
-            System.out.println(returnedTag);
         } catch (NullPointerException e) {
+            // todo: give error to user http
             System.out.println("EMVTag %s not found\n");
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<Tag> getEMVTagByKeyword(String value) {
-        /// TODO: 10/1/2021 make it so it returns a list of entries instead of just one
-        Optional<Tag> returnedTag = Optional.empty();
+    public Optional<List<Tag>> getEMVTagByKeyword(String value) {
+        List<Optional<Tag>> resultList = new ArrayList<>();
+        Optional<List<Tag>> returnedTag = Optional.empty();
         try {
-            returnedTag = Optional.ofNullable(Optional.of(tagRepository.findByDescriptionContainingIgnoreCase(value)).orElseThrow(
-                    // anonymous class?
+            returnedTag = Optional.ofNullable(Optional.of(tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value)).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
-            System.out.println(returnedTag);
+            //var returnedTag = tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value);
+            System.out.println("HEY" + returnedTag);
+            //resultList.add(returnedTag);
         } catch (NullPointerException e) {
             System.out.println("Tag description %s not found\n");
         }
