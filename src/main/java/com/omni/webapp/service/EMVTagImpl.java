@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,14 +35,11 @@ public class EMVTagImpl implements EMVTag {
 
     @Override
     public Optional<List<Tag>> getEMVTagByKeyword(String value) {
-        List<Optional<Tag>> resultList = new ArrayList<>();
         Optional<List<Tag>> returnedTag = Optional.empty();
         try {
             returnedTag = Optional.ofNullable(Optional.of(tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value)).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
-            //var returnedTag = tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value);
             System.out.println("HEY" + returnedTag);
-            //resultList.add(returnedTag);
         } catch (NullPointerException e) {
             System.out.println("Tag description %s not found\n");
         }

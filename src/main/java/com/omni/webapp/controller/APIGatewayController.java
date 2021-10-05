@@ -1,40 +1,38 @@
 package com.omni.webapp.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-
 import com.omni.webapp.models.*;
 import com.omni.webapp.service.EMVTag;
-import javassist.NotFoundException;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import com.omni.webapp.service.TLVDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class APIGatewayController {
     private static final Logger logger = LoggerFactory.getLogger(APIGatewayController.class);
 
-    private final TagRepository tagRepository;
     private final EMVTag emvTag;
+    private final TLVDecoder tlvDecoder;
 
     @Autowired
-    public APIGatewayController(TagRepository tagRepository, EMVTag emvTag) {
-        this.tagRepository = tagRepository;
+    public APIGatewayController(EMVTag emvTag, TLVDecoder tlvDecoder) {
         this.emvTag = emvTag;
+        this.tlvDecoder = tlvDecoder;
     }
 
     @RequestMapping(path = "/emvtagsearch/{emvtag}", produces = "application/json")
     public ResponseEntity<TagResponse> getEMVTag(@PathVariable String emvtag) throws TagNotFoundException {
+        logger.info("Inputted variable: {}", emvtag);
+
         Optional<Tag> tag = emvTag.getEMVTag(emvtag);
+        logger.info(String.valueOf(tag));
+
         TagResponse tagResponse = new TagResponse();
         if (tag.isPresent()) {
             tagResponse.setName(tag.get().getName());
@@ -43,20 +41,20 @@ public class APIGatewayController {
         }
 
         return tag.map(result -> new ResponseEntity<>(tagResponse, HttpStatus.FOUND))
-                //.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found"));
         .orElseThrow(TagNotFoundException::new);
     }
 
-//    // REST API ERROR RESPONSE RESTCONTROLLERADVICE DOESNT WORK I TRIED WTF ONLY WORKS IN SAME FILE
-//    // NVM DSAIOJKLDMALFDLF
-//    @ExceptionHandler(value = TagNotFoundException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ResponseBody
-//    public ResponseEntity<APIErrorResponse> resolveException(TagNotFoundException ex, HttpServletRequest request){
-//        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
-//                "404", "Invalid request input", "Please enter a valid EMV Tag.");
-//        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
-//    }
+    @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json")
+    public ResponseEntity<List<List<String>>> getTLVData(@PathVariable String tlv) throws InvalidTLVException {
+        logger.info("Inputted TLV: {}", tlv);
+        try{
+            List<List<String>> tlvList = tlvDecoder.decodeTLVData(tlv);
+            logger.info(String.valueOf(tlvList));
+            return new ResponseEntity<>(tlvList, HttpStatus.FOUND);
+        } catch (Exception e) {
+            throw new InvalidTLVException();
+        }
+    }
 
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
@@ -68,14 +66,4 @@ public class APIGatewayController {
         emvTag.getEMVTagByKeyword("DSAIODMASLKDKASLDMAS");
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
-
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Tag> getAllTags() {
-        return tagRepository.findAll();
-    }
-
-//    @ExceptionHandler(RuntimeException.class)
-//    public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {
-//        return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 }
