@@ -5,8 +5,6 @@ import io.github.binaryfoo.RootDecoder;
 import javassist.bytecode.stackmap.TypeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

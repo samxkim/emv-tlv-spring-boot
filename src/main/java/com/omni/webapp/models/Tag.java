@@ -5,7 +5,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +41,6 @@ public class Tag {
     @JoinColumn(name = "tag_example_id")
     private TagExamplesEntity tagExamplesFK;
 
-    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "tag")
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "tag_group", joinColumns = @JoinColumn(name = "tag_id"),
     inverseJoinColumns = @JoinColumn(name = "group_id"))

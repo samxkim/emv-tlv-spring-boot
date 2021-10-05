@@ -15,16 +15,6 @@ public class FileToTest {
     private String s;
 
     public void translateToList(List<DecodedData> decoded) {
-/*      [6F (FCI template)]
-        840E315041592E5359532E4444463031A5088801025F2D02656E
-        [84 (dedicated file name)]
-        1PAY.SYS.DDF01
-        [A5 (FCI proprietary template)]
-        8801025F2D02656E
-        [88 (SFI - Short file identifier)]
-        02
-        [5F2D (language preference)]
-        en*/
         this.decoded = decoded;
         for (DecodedData element : decoded) {
             if (element.getRawData().length() > 0) {
@@ -35,7 +25,7 @@ public class FileToTest {
             System.out.println(element.getDecodedData() + "\n");
             translateToList(element.getKids());
         }
-    };
+    }
     // Change out of main once debug is complete
     public static void main(String[] args) {
 //        List<DecodedData> decoded = new RootDecoder().decode("6F1A840E315041592E5359532E4444463031A5088801025F2D02656E", "emv", "constructed");
