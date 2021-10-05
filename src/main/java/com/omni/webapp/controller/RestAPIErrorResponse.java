@@ -20,9 +20,18 @@ public class RestAPIErrorResponse {
     @ExceptionHandler(value = TagNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<APIErrorResponse> resolveException(TagNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<APIErrorResponse> resolveTagException(TagNotFoundException ex, HttpServletRequest request){
         APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
                 "404", "Invalid request input", "Please enter a valid EMV Tag.");
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = InvalidTLVException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<APIErrorResponse> resolveTLVException(InvalidTLVException ex, HttpServletRequest request) {
+        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
+                "404", "Invalid request input", "Please enter valid input.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }

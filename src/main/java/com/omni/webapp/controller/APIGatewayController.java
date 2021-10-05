@@ -1,9 +1,11 @@
 package com.omni.webapp.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import com.omni.webapp.models.*;
 import com.omni.webapp.service.EMVTag;
+import com.omni.webapp.service.TLVDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +18,21 @@ public class APIGatewayController {
     private static final Logger logger = LoggerFactory.getLogger(APIGatewayController.class);
 
     private final EMVTag emvTag;
+    private final TLVDecoder tlvDecoder;
 
     @Autowired
-    public APIGatewayController(EMVTag emvTag) {
+    public APIGatewayController(EMVTag emvTag, TLVDecoder tlvDecoder) {
         this.emvTag = emvTag;
+        this.tlvDecoder = tlvDecoder;
     }
 
     @RequestMapping(path = "/emvtagsearch/{emvtag}", produces = "application/json")
     public ResponseEntity<TagResponse> getEMVTag(@PathVariable String emvtag) throws TagNotFoundException {
+        logger.info("Inputted variable: {}", emvtag);
+
         Optional<Tag> tag = emvTag.getEMVTag(emvtag);
+        logger.info(String.valueOf(tag));
+
         TagResponse tagResponse = new TagResponse();
         if (tag.isPresent()) {
             tagResponse.setName(tag.get().getName());
@@ -34,6 +42,18 @@ public class APIGatewayController {
 
         return tag.map(result -> new ResponseEntity<>(tagResponse, HttpStatus.FOUND))
         .orElseThrow(TagNotFoundException::new);
+    }
+
+    @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json")
+    public ResponseEntity<List<List<String>>> getTLVData(@PathVariable String tlv) throws InvalidTLVException {
+        logger.info("Inputted TLV: {}", tlv);
+        try{
+            List<List<String>> tlvList = tlvDecoder.decodeTLVData(tlv);
+            logger.info(String.valueOf(tlvList));
+            return new ResponseEntity<>(tlvList, HttpStatus.FOUND);
+        } catch (Exception e) {
+            throw new InvalidTLVException();
+        }
     }
 
     @GetMapping("/greeting")
