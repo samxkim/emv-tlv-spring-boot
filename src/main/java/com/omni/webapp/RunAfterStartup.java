@@ -19,8 +19,11 @@ public class RunAfterStartup {
 
     private static final Logger LOG = LoggerFactory.getLogger(RunAfterStartup.class);
 
-    @Autowired
-    TagRepository tagRepository;
+    final TagRepository tagRepository;
+
+    public RunAfterStartup(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void insertInitialTags() {
@@ -31,7 +34,7 @@ public class RunAfterStartup {
             f.setAccessible(true);
             try {
                 Tag currentTag = (Tag) f.get(null);
-                if (!tagRepository.findByNameNotNull(currentTag.getName())) {
+                if (!tagRepository.existsByName(currentTag.getName())) {
                     tags.add(currentTag);
                 }
             } catch (IllegalAccessException e) {

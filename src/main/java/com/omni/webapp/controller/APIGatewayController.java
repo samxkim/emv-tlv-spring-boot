@@ -25,7 +25,12 @@ public class APIGatewayController {
         this.emvTag = emvTag;
     }
 
-    @RequestMapping(value = "/emvtagsearch", method = RequestMethod.POST)
+    @GetMapping(path = "/emvtagsearch/{emvtag}", produces = "application/json")
+    public ResponseEntity<Tag> getEMVTag(@PathVariable String emvtag, @RequestHeader Long userId) {
+        Optional<Tag> tag = emvTag.getEMVTag(emvtag);
+        return tag.map(result -> new ResponseEntity<>(result, HttpStatus.FOUND))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
