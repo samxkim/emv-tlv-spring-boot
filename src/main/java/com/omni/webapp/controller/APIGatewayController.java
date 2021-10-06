@@ -1,8 +1,10 @@
 package com.omni.webapp.controller;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.omni.webapp.models.*;
 import com.omni.webapp.service.EMVTag;
 import com.omni.webapp.service.TLVDecoder;
@@ -26,11 +28,33 @@ public class APIGatewayController {
         this.tlvDecoder = tlvDecoder;
     }
 
-    @RequestMapping(path = "/emvtagsearch/{emvtag}", produces = "application/json")
-    public ResponseEntity<TagResponse> getEMVTag(@PathVariable String emvtag) throws TagNotFoundException {
-        logger.info("Inputted variable: {}", emvtag);
+    @RequestMapping(path = "/emvtagsearchdescription", produces = "application/json")
+    public ResponseEntity<List<TagResponse>> getEMVByDescription(@RequestParam(name = "description") String description) throws TagNotFoundException {
+        logger.info("Inputted variable: {}", description);
 
-        Optional<Tag> tag = emvTag.getEMVTag(emvtag);
+        List<TagResponse> tagResponseList = new ArrayList<>();
+        Optional<List<Tag>> tag = emvTag.getEMVTagByKeyword(description);
+        logger.info(String.valueOf(tag));
+
+        if (tag.isPresent()) {
+            List<Tag> tagList = tag.get();
+            for (Tag value : tagList) {
+                TagResponse tagResponse = new TagResponse();
+                tagResponse.setName(value.getName());
+                tagResponse.setDescription(value.getDescription());
+                tagResponseList.add(tagResponse);
+            }
+        }
+
+        return tag.map(result -> new ResponseEntity<>(tagResponseList, HttpStatus.FOUND))
+                .orElseThrow(TagNotFoundException::new);
+    }
+
+    @RequestMapping(path = "/emvtagsearch", produces = "application/json")
+    public ResponseEntity<TagResponse> getEMVTag(@RequestParam("id") String id) throws TagNotFoundException {
+        logger.info("Inputted variable: {}", id);
+
+        Optional<Tag> tag = emvTag.getEMVTag(id);
         logger.info(String.valueOf(tag));
 
         TagResponse tagResponse = new TagResponse();
@@ -41,7 +65,7 @@ public class APIGatewayController {
         }
 
         return tag.map(result -> new ResponseEntity<>(tagResponse, HttpStatus.FOUND))
-        .orElseThrow(TagNotFoundException::new);
+                .orElseThrow(TagNotFoundException::new);
     }
 
     @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json")
@@ -54,16 +78,5 @@ public class APIGatewayController {
         } catch (Exception e) {
             throw new InvalidTLVException();
         }
-    }
-
-    @GetMapping("/greeting")
-    public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-        final String template = "Hello, %s!";
-        final AtomicLong counter = new AtomicLong();
-        Optional<Tag> tag = emvTag.getEMVTag("5f50");
-        emvTag.getEMVTag("06dsadsa");
-        emvTag.getEMVTagByKeyword("OID");
-        emvTag.getEMVTagByKeyword("DSAIODMASLKDKASLDMAS");
-        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 }
