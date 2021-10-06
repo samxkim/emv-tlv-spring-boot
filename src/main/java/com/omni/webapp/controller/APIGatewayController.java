@@ -38,6 +38,11 @@ public class APIGatewayController {
 
         if (tag.isPresent()) {
             List<Tag> tagList = tag.get();
+
+            if (tag.get().isEmpty()) {
+                throw new TagNotFoundException();
+            }
+
             for (Tag value : tagList) {
                 TagResponse tagResponse = new TagResponse();
                 tagResponse.setName(value.getName());
@@ -74,6 +79,9 @@ public class APIGatewayController {
         try{
             List<List<String>> tlvList = tlvDecoder.decodeTLVData(tlv);
             logger.info(String.valueOf(tlvList));
+            if (tlvList.size() == 0) {
+                throw new InvalidTLVException();
+            }
             return new ResponseEntity<>(tlvList, HttpStatus.FOUND);
         } catch (Exception e) {
             throw new InvalidTLVException();
