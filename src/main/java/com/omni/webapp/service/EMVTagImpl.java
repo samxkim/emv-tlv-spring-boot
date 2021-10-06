@@ -27,8 +27,7 @@ public class EMVTagImpl implements EMVTag {
             return Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
                     () -> new ResourceNotFoundException(String.format("EMVTag %s not found.", value))));
         } catch (NullPointerException e) {
-            // todo: remove catch here, let it catch higher up and for user http
-            System.out.println("EMVTag %s not found\n");
+            System.out.println("EMVTag not found\n");
         }
         return Optional.empty();
     }
@@ -41,8 +40,7 @@ public class EMVTagImpl implements EMVTag {
                     () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
             //System.out.println("HEY" + returnedTag);
         } catch (NullPointerException e) {
-            // todo: remove catch here, let it catch higher up and for user http
-            logger.info("Tag description %s not found");
+            logger.info("Tag description not found");
         }
         return returnedTag;
     }
