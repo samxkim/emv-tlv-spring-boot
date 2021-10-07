@@ -126,7 +126,7 @@ class APIGatewayControllerTest {
 
     @Test
     void whenInvalidInputTLVReturn400() throws Exception {
-        String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Invalid request input\",\"detail\":\"Please enter valid input.\"}";
+        String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Invalid TLV Data\",\"detail\":\"Please enter valid input.\"}";
         given(tlvDecoder.decodeTLVData("dsadsadadsa")).willThrow(new InvalidTLVException("Invalid TLV Data."));
 
         this.mockMvc.perform(get("/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
