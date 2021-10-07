@@ -36,18 +36,18 @@ public class RestAPIErrorResponse {
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<APIErrorResponse> resolveExistingUserException(InvalidTLVException ex, HttpServletRequest request) {
+    public ResponseEntity<APIErrorResponse> resolveExistingUserException(UserAlreadyExistsException ex, HttpServletRequest request) {
         APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
-                "400", ex.getMessage(), "Please enter valid user details.");
+                "400", ex.getMessage(), "Please enter differently.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = UserPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<APIErrorResponse> resolvePasswordException(InvalidTLVException ex, HttpServletRequest request) {
+    public ResponseEntity<APIErrorResponse> resolvePasswordException(UserPasswordException ex, HttpServletRequest request) {
         APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
-                "400", ex.getMessage(), "Password must have at least eight characters, one uppercase letter, one lowercase letter and one number.");
+                "400", ex.getMessage(), "Password must have at least eight characters, one special character, one uppercase letter, one lowercase letter and one number.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 

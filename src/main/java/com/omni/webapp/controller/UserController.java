@@ -6,6 +6,7 @@ import com.omni.webapp.models.UserRestModelRequestDto;
 import com.omni.webapp.models.UserRestModelResponseDto;
 import com.omni.webapp.service.DBUserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.omni.webapp.utils.PasswordUtils.passwordValidLength;
 
 @RestController
 @Validated
@@ -35,31 +35,22 @@ public class UserController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
     }
-    public static boolean passwordValidLength(String password) {
-        Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
-    }
 
     @PostMapping(path = "/register", produces = "application/json")
-    public ResponseEntity<UserRestModelResponseDto> createUser(@Valid @RequestBody UserRestModelRequestDto userRestModelRequestDto) throws UserAlreadyExistsException {
-//        @RequestParam(name = "username") String username,
-//        @RequestParam(name = "password") String password,
-//        @RequestParam(name = "email") String email,
-//        @RequestParam(name = "company_name") String companyName,
+    public ResponseEntity<UserRestModelResponseDto> createUser(@Valid @RequestBody UserRestModelRequestDto userRestModelRequestDto) throws UserAlreadyExistsException, UserPasswordException {
         if (!passwordValidLength(userRestModelRequestDto.getPassword())) {
             throw new UserPasswordException("Password is not valid.");
         }
         String encodedPassword = bCryptPasswordEncoder.encode(userRestModelRequestDto.getPassword());
-        // duplicated entries, password length, duplicate email, etc
-        // todo: deal with exceptions
-        // UserNotFoundException
         UserEntity user = new UserEntity(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(),
                 userRestModelRequestDto.getCompanyName(), encodedPassword, true, "ROLE_USER");
         try {
+            if (userRepository.existsByUserName(user.getUserName())) {
+                throw new UserAlreadyExistsException("Username already exists");
+            }
             userRepository.save(user);
-        } catch (Exception e) {
-            throw new UserAlreadyExistsException(String.format("Username: %s already exists", user.getUserName()));
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAlreadyExistsException("Email already exists");
         }
         UserRestModelResponseDto responseDto = new UserRestModelResponseDto(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(), userRestModelRequestDto.getCompanyName());
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
