@@ -34,4 +34,13 @@ public class RestAPIErrorResponse {
                 "400", "Invalid request input", "Please enter valid input.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<APIErrorResponse> resolveUserException(InvalidTLVException ex, HttpServletRequest request) {
+        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
+                "400", "Invalid request user input", "Please enter valid user input.");
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
 }

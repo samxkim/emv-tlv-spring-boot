@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "users")
-public class UserEntity{
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -36,6 +36,9 @@ public class UserEntity{
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private Date created_date;
+
+    @Column(name = "authorities", nullable = false)
+    private String authorities;
 
     public long getId() {
         return id;
@@ -67,6 +70,50 @@ public class UserEntity{
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Date getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(Date created_date) {
+        this.created_date = created_date;
+    }
+
+    public String getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
     }
 }
 

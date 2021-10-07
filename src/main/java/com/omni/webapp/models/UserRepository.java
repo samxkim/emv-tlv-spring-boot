@@ -1,10 +1,9 @@
 package com.omni.webapp.models;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
-    UserEntity findUserEntityByUserNameEquals(String username);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    UserEntity findUserEntityByUserName(String username);
 }
