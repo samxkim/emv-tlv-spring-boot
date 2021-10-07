@@ -9,9 +9,6 @@ public interface TagRepository extends CrudRepository<Tag, Integer> {
     @Query("select t from Tag t where t.name = ?1")
     Tag findByName(String name);
 
-    @Query("select t from Tag t where t.name is not null")
-    Boolean findByNameNotNull(String infix);
-
     @Query("select (count(t) > 0) from Tag t where t.name = ?1")
     Boolean existsByName(String infix);
 

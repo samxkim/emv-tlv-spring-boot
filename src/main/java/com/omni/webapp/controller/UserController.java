@@ -7,10 +7,12 @@ import com.omni.webapp.service.DBUserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("users")
@@ -36,8 +38,13 @@ public class UserController {
                                                               @RequestParam(name = "company_name") String companyName) throws UserNotFoundException {
         String encodedPassword = bCryptPasswordEncoder.encode(password);
         // duplicated entries, password length, duplicate email, etc
+        // todo: deal with exceptions
         UserEntity user = new UserEntity(username, email, companyName, encodedPassword, true, "ROLE_USER");
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException();
+        }
         UserRestModelResponseDto responseDto = new UserRestModelResponseDto(username, email, companyName);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -58,5 +65,11 @@ public class UserController {
     @DeleteMapping
     public String deleteUser() {
         return "Rest";
+    }
+
+    public static boolean passwordValidLength(String password) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z@#$%^&+=](?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }

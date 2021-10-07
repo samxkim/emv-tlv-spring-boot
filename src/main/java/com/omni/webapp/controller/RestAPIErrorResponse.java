@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestAPIErrorResponse {
+    // todo: create three default exceptions and branch out (like a tree)
     private final Logger logger = LoggerFactory.getLogger(TypeData.ClassName.class);
 
     @ExceptionHandler(value = TagNotFoundException.class)
@@ -41,6 +42,15 @@ public class RestAPIErrorResponse {
     public ResponseEntity<APIErrorResponse> resolveUserException(InvalidTLVException ex, HttpServletRequest request) {
         APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
                 "400", "Invalid request user input", "Please enter valid user input.");
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<APIErrorResponse> resolveExistingUserException(InvalidTLVException ex, HttpServletRequest request) {
+        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
+                "400", "User already exists", "Please enter valid user details.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }

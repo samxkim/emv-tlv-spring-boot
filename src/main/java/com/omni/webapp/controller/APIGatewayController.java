@@ -33,44 +33,39 @@ public class APIGatewayController {
         logger.info("Inputted variable: {}", description);
 
         List<TagResponse> tagResponseList = new ArrayList<>();
-        Optional<List<Tag>> tag = emvTag.getEMVTagByKeyword(description);
-        logger.info(String.valueOf(tag));
+        List<Tag> tagList = emvTag.getEMVTagByKeyword(description);
+        logger.info(String.valueOf(tagList));
 
-        if (tag.isPresent()) {
-            List<Tag> tagList = tag.get();
-
-            if (tag.get().isEmpty()) {
-                throw new TagNotFoundException();
-            }
-
-            for (Tag value : tagList) {
-                TagResponse tagResponse = new TagResponse();
-                tagResponse.setName(value.getName());
-                tagResponse.setDescription(value.getDescription());
-                tagResponseList.add(tagResponse);
-            }
+        if (tagList.isEmpty()) {
+            throw new TagNotFoundException();
         }
 
-        return tag.map(result -> new ResponseEntity<>(tagResponseList, HttpStatus.FOUND))
-                .orElseThrow(TagNotFoundException::new);
+        for (Tag value : tagList) {
+            TagResponse tagResponse = new TagResponse();
+            tagResponse.setName(value.getName());
+            tagResponse.setDescription(value.getDescription());
+            tagResponseList.add(tagResponse);
+        }
+
+        return new ResponseEntity<>(tagResponseList, HttpStatus.FOUND);
+                //.orElseThrow(TagNotFoundException::new);
     }
 
     @RequestMapping(path = "/emvtagsearch", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<TagResponse> getEMVTag(@RequestParam("id") String id) throws TagNotFoundException {
         logger.info("Inputted variable: {}", id);
 
-        Optional<Tag> tag = emvTag.getEMVTag(id);
+        Tag tag = emvTag.getEMVTag(id);
         logger.info(String.valueOf(tag));
 
         TagResponse tagResponse = new TagResponse();
-        if (tag.isPresent()) {
-            tagResponse.setName(tag.get().getName());
-            tagResponse.setDescription(tag.get().getDescription());
-            tagResponse.setUpdate_date(tag.get().getUpdate_date());
-        }
 
-        return tag.map(result -> new ResponseEntity<>(tagResponse, HttpStatus.FOUND))
-                .orElseThrow(TagNotFoundException::new);
+        tagResponse.setName(tag.getName());
+        tagResponse.setDescription(tag.getDescription());
+        tagResponse.setUpdate_date(tag.getUpdate_date());
+
+        return new ResponseEntity<>(tagResponse, HttpStatus.FOUND);
+                //.orElseThrow(TagNotFoundException::new);
     }
 
     @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json", method = RequestMethod.GET)

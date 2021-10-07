@@ -1,5 +1,6 @@
 package com.omni.webapp.service;
 
+import com.omni.webapp.controller.TagNotFoundException;
 import com.omni.webapp.models.Tag;
 import com.omni.webapp.models.TagRepository;
 import javassist.bytecode.stackmap.TypeData;
@@ -7,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,26 +25,30 @@ public class EMVTagImpl implements EMVTag {
     }
 
     @Override
-    public Optional<Tag> getEMVTag(String value) {
+    public Tag getEMVTag(String value) {
+        // todo: remove usage of optional (and the tests too)
         try {
-            return Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format("EMVTag %s not found.", value))));
+            //return Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
+            //        () -> new ResourceNotFoundException(String.format("EMVTag %s not found.", value))));
+            return tagRepository.findByName(value);
         } catch (NullPointerException e) {
-            System.out.println("EMVTag not found\n");
+            // change to default exception
+            throw new TagNotFoundException();
         }
-        return Optional.empty();
+        //return Optional.empty();
     }
 
     @Override
-    public Optional<List<Tag>> getEMVTagByKeyword(String value) {
-        Optional<List<Tag>> returnedTag = Optional.empty();
+    public List<Tag> getEMVTagByKeyword(String value) {
+        // todo: remove usage of optional (and the tests too)
         try {
-            returnedTag = Optional.ofNullable(Optional.of(tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value)).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
+            //returnedTag = Optional.ofNullable(Optional.of(tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value)).orElseThrow(
+                    //() -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
             //System.out.println("HEY" + returnedTag);
-        } catch (NullPointerException e) {
-            logger.info("Tag description not found");
+            return tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value);
+        } catch (Exception e) {
+            // change to default exception
+            throw new TagNotFoundException();
         }
-        return returnedTag;
     }
 }

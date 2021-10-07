@@ -23,9 +23,6 @@ public class UserEntity {
     @Column(nullable = false)
     private String companyName;
 
-    @Transient
-    private String password;
-
     @Column(nullable = false)
     private String encryptedPassword;
 
@@ -88,14 +85,6 @@ public class UserEntity {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Boolean getActive() {

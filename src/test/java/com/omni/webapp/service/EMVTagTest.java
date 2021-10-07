@@ -1,5 +1,6 @@
 package com.omni.webapp.service;
 
+import com.omni.webapp.controller.TagNotFoundException;
 import com.omni.webapp.models.Tag;
 import com.omni.webapp.models.TagRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -30,32 +31,30 @@ class EMVTagTest {
 
     @AfterEach
     public void destroy() {
-        tagRepository.deleteAll();
+        //tagRepository.deleteAll();
     }
 
     @Test
     public void checkForPresentTagValue() {
-        Optional<Tag> returnedTag = emvTag.getEMVTag("5f50");
-        assertFalse(returnedTag.isPresent());
+        Tag returnedTag = emvTag.getEMVTag("5f50");
+        assertEquals(returnedTag.getName(), "5f50");
     }
 
     @Test
     public void checkForInvalidTagValue() {
-        Optional<Tag> returnedTag = emvTag.getEMVTag("dsadsadasdsa");
-        assertFalse(returnedTag.isPresent());
+        Tag returnedTag = emvTag.getEMVTag("dsadsadasdsa");
+        assertNull(returnedTag);
     }
 
     @Test
     public void checkForValidKeyword() {
-        Optional<List<Tag>> returnedTagList = emvTag.getEMVTagByKeyword("Country Code");
-        Integer sizeOfList = returnedTagList.map(List::size).orElse(0);
-        assertEquals(5, sizeOfList);
+        List<Tag> returnedTagList = emvTag.getEMVTagByKeyword("Country Code");
+        assertEquals(5, returnedTagList.size());
     }
 
     @Test
     public void checkForInvalidKeyword() {
-        Optional<List<Tag>> returnedTagList = emvTag.getEMVTagByKeyword("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        Integer sizeOfList = returnedTagList.map(List::size).orElse(0);
-        assertEquals(0, sizeOfList);
+        List<Tag> returnedTagList = emvTag.getEMVTagByKeyword("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        assertEquals(0, returnedTagList.size());
     }
 }

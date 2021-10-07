@@ -11,27 +11,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
-@WebMvcTest(controllers = APIGatewayController.class)
+//@WebMvcTest(controllers = APIGatewayController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class APIGatewayControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @MockBean
     private EMVTag emvTag;
@@ -39,16 +44,16 @@ class APIGatewayControllerTest {
     @MockBean
     private TLVDecoder tlvDecoder;
 
-    @MockBean
-    private TagRepository tagRepository;
-
     @BeforeEach
     public void init() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+                .apply(springSecurity())
+                .build();
     }
 
     @AfterEach
     public void destroy() {
-        tagRepository.deleteAll();
+        //tagRepository.deleteAll();
     }
 
     @Test
@@ -57,8 +62,8 @@ class APIGatewayControllerTest {
                 "\"Country Code: Country code (encoding specified in ISO 3166-1) and optional national data\"," +
                 "\"update_date\":null}";
         given(emvTag.getEMVTag("41"))
-                .willReturn(java.util.Optional.of(new Tag("41", "Country Code: Country code " +
-                        "(encoding specified in ISO 3166-1) and optional national data")));
+                .willReturn(new Tag("41", "Country Code: Country code " +
+                        "(encoding specified in ISO 3166-1) and optional national data"));
 
         this.mockMvc.perform(get("/emvtagsearch")
                         .accept(MediaType.APPLICATION_JSON)
@@ -79,7 +84,7 @@ class APIGatewayControllerTest {
     @Test
     void whenValidInputKeywordReturn302() throws Exception {
         String responseBody = "[{\"name\":\"9f6e\",\"description\":\"Visa Low-Value Payment (VLP) Issuer Authorisation Code\",\"update_date\":null}]";
-        Optional<List<Tag>> returnedTagList = Optional.of(List.of(new Tag("9f6e", "Visa Low-Value Payment (VLP) Issuer Authorisation Code")));
+        List<Tag> returnedTagList = List.of(new Tag("9f6e", "Visa Low-Value Payment (VLP) Issuer Authorisation Code"));
         given(emvTag.getEMVTagByKeyword("visa"))
         .willReturn(returnedTagList);
 
@@ -92,16 +97,15 @@ class APIGatewayControllerTest {
 
     @Test
     void whenInvalidInputKeywordReturn400() throws Exception {
-        String responseBody = "[{\"name\":\"9f6e\",\"description\":\"Visa Low-Value Payment (VLP) Issuer Authorisation Code\",\"update_date\":null}]";
-        Optional<List<Tag>> returnedTagList = Optional.of(List.of(new Tag("9f6e", "Visa Low-Value Payment (VLP) Issuer Authorisation Code")));
-        given(emvTag.getEMVTagByKeyword("visa"))
+        String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Invalid request input\",\"detail\":\"Please enter valid input.\"}";
+        List<Tag> returnedTagList = Collections.emptyList();
+        given(emvTag.getEMVTagByKeyword("dsadasdsadsada"))
                 .willReturn(returnedTagList);
 
         this.mockMvc.perform(get("/emvtagsearchdescription")
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("description", "visa"))
-                .andExpect(status().isFound())
-                .andExpect(content().string(responseBody));
+                        .param("description", "dsadasdsadsada"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
