@@ -1,23 +1,52 @@
 package com.omni.webapp.controller;
 
-import com.omni.webapp.models.UserRestModelRequestDto;
+import com.omni.webapp.models.UserEntity;
+import com.omni.webapp.models.UserRepository;
 import com.omni.webapp.models.UserRestModelResponseDto;
+import com.omni.webapp.service.DBUserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
 
-    @PostMapping(path = "/register", produces = "application/json")
-    public UserRestModelResponseDto createUser(@RequestParam(name = "username") String username,
-                                               @RequestParam(name = "password") String password,
-                                               @RequestParam(name = "email") String email,
-                                               @RequestParam(name = "company_name") String companyName) throws UserNotFoundException {
-        return null;
+    private final DBUserDetailsImpl dbUserDetails;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserController(DBUserDetailsImpl dbUserDetails,
+                          BCryptPasswordEncoder bCryptPasswordEncoder,
+                          UserRepository userRepository) {
+        this.dbUserDetails = dbUserDetails;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userRepository = userRepository;
     }
 
-    @PostMapping
-    public String getUser() {
+    @PostMapping(path = "/register", produces = "application/json")
+    public ResponseEntity<UserRestModelResponseDto> createUser(@RequestParam(name = "username") String username,
+                                                              @RequestParam(name = "password") String password,
+                                                              @RequestParam(name = "email") String email,
+                                                              @RequestParam(name = "company_name") String companyName) throws UserNotFoundException {
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        // duplicated entries, password length, duplicate email, etc
+        UserEntity user = new UserEntity(username, email, companyName, encodedPassword, true, "ROLE_USER");
+        userRepository.save(user);
+        UserRestModelResponseDto responseDto = new UserRestModelResponseDto(username, email, companyName);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(path = "/login", produces = "application/json", method = RequestMethod.GET)
+    public UserRestModelResponseDto getUser(@RequestParam(name = "username") String username,
+                                            @RequestParam(name = "password") String password) throws UserNotFoundException{
+        UserDetails user = dbUserDetails.loadUserByUsername(username);
+        Boolean doesPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
         return null;
     }
 

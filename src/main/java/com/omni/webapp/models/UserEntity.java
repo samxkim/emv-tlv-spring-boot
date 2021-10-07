@@ -23,7 +23,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String companyName;
 
-    @org.springframework.data.annotation.Transient
+    @Transient
     private String password;
 
     @Column(nullable = false)
@@ -40,13 +40,19 @@ public class UserEntity {
     @Column(name = "authorities", nullable = false)
     private String authorities;
 
-    public long getId() {
-        return id;
+    public UserEntity(String userName, String email, String companyName, String password, Boolean isActive, String authorities) {
+        this.userName = userName;
+        this.email = email;
+        this.companyName = companyName;
+        this.encryptedPassword = password;
+        this.isActive = isActive;
+        this.authorities = authorities;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public UserEntity() {
+
     }
+
 
     public String getUserName() {
         return userName;

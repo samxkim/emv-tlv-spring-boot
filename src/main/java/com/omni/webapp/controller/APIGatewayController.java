@@ -28,7 +28,7 @@ public class APIGatewayController {
         this.tlvDecoder = tlvDecoder;
     }
 
-    @RequestMapping(path = "/emvtagsearchdescription", produces = "application/json")
+    @RequestMapping(path = "/emvtagsearchdescription", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<List<TagResponse>> getEMVByDescription(@RequestParam(name = "description") String description) throws TagNotFoundException {
         logger.info("Inputted variable: {}", description);
 
@@ -55,7 +55,7 @@ public class APIGatewayController {
                 .orElseThrow(TagNotFoundException::new);
     }
 
-    @RequestMapping(path = "/emvtagsearch", produces = "application/json")
+    @RequestMapping(path = "/emvtagsearch", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<TagResponse> getEMVTag(@RequestParam("id") String id) throws TagNotFoundException {
         logger.info("Inputted variable: {}", id);
 
@@ -73,7 +73,7 @@ public class APIGatewayController {
                 .orElseThrow(TagNotFoundException::new);
     }
 
-    @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json")
+    @RequestMapping(path = "/tlvdecoder/{tlv}", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<List<List<String>>> getTLVData(@PathVariable String tlv) throws InvalidTLVException {
         logger.info("Inputted TLV: {}", tlv);
         try{

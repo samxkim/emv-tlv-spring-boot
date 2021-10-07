@@ -1,7 +1,7 @@
 package com.omni.webapp.config;
 
 import com.omni.webapp.models.UserRepository;
-import com.omni.webapp.service.DatabaseUserDetailsService;
+import com.omni.webapp.service.DBUserDetailsImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,18 +36,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/**")
                 .permitAll()
-                .antMatchers("/admin")
-                .hasAnyRole("ADMIN")
                 .and()
+                .csrf()
+                .ignoringAntMatchers("/users/**");
+                //.antMatchers("/admin")
+                //.hasAnyRole("ADMIN")
+                //.antMatchers("/user*")
+                //.permitAll()
+                //.and()
                 //.antMatchers("/admin").hasAuthority("ROLE_ADMIN")
-                .formLogin()
+                //.formLogin()
                 //.loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .httpBasic();
+                //.permitAll()
+                //.and()
+                //.logout()
+                //.permitAll()
+                //.and()
+                //.httpBasic();
     }
 
     @Bean
@@ -57,6 +62,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new DatabaseUserDetailsService(userRepository);
+        return new DBUserDetailsImpl(userRepository);
     }
 }

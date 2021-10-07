@@ -1,17 +1,14 @@
 package com.omni.webapp.models;
 
 public class UserRestModelResponseDto {
-    private String userId;
     private String userName;
     private String email;
     private String companyName;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public UserRestModelResponseDto(String userName, String email, String companyName) {
+        this.userName = userName;
+        this.email = email;
+        this.companyName = companyName;
     }
 
     public String getUserName() {

@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DatabaseUserDetailsService implements UserDetailsService {
+public class DBUserDetailsImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public DatabaseUserDetailsService(UserRepository userRepository) {
+    public DBUserDetailsImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -27,6 +27,6 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
         UserEntity user = userRepository.findUserEntityByUserName(username);
         List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getAuthorities()));
-        return new User(user.getUserName(), user.getPassword(), grantedAuthorities);
+        return new User(user.getUserName(), user.getEncryptedPassword(), grantedAuthorities);
     }
 }
