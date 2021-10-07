@@ -74,7 +74,7 @@ class APIGatewayControllerTest {
 
     @Test
     void whenInvalidInputTagReturn400() throws Exception {
-        given(emvTag.getEMVTag("dsadsadasdsa")).willThrow(new TagNotFoundException());
+        given(emvTag.getEMVTag("dsadsadasdsa")).willThrow(new TagNotFoundException("EMV Tag not found."));
         this.mockMvc.perform(get("/emvtagsearch")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("id", "dsadsadasdsa"))
@@ -127,7 +127,7 @@ class APIGatewayControllerTest {
     @Test
     void whenInvalidInputTLVReturn400() throws Exception {
         String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Invalid request input\",\"detail\":\"Please enter valid input.\"}";
-        given(tlvDecoder.decodeTLVData("dsadsadadsa")).willThrow(new TagNotFoundException());
+        given(tlvDecoder.decodeTLVData("dsadsadadsa")).willThrow(new InvalidTLVException("Invalid TLV Data."));
 
         this.mockMvc.perform(get("/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
                         .accept(MediaType.APPLICATION_JSON))

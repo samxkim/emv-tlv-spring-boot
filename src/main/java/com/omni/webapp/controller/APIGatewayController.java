@@ -37,7 +37,7 @@ public class APIGatewayController {
         logger.info(String.valueOf(tagList));
 
         if (tagList.isEmpty()) {
-            throw new TagNotFoundException();
+            throw new TagNotFoundException("EMV Tag not found.");
         }
 
         for (Tag value : tagList) {
@@ -56,6 +56,9 @@ public class APIGatewayController {
         logger.info("Inputted variable: {}", id);
 
         Tag tag = emvTag.getEMVTag(id);
+        if (tag == null) {
+            throw new TagNotFoundException("Tag does not exist.");
+        }
         logger.info(String.valueOf(tag));
 
         TagResponse tagResponse = new TagResponse();
@@ -75,11 +78,11 @@ public class APIGatewayController {
             List<List<String>> tlvList = tlvDecoder.decodeTLVData(tlv);
             logger.info(String.valueOf(tlvList));
             if (tlvList.size() == 0) {
-                throw new InvalidTLVException();
+                throw new InvalidTLVException("Invalid TLV");
             }
             return new ResponseEntity<>(tlvList, HttpStatus.FOUND);
         } catch (Exception e) {
-            throw new InvalidTLVException();
+            throw new InvalidTLVException("Invalid TLV Data");
         }
     }
 }

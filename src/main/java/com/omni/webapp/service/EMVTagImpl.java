@@ -26,29 +26,27 @@ public class EMVTagImpl implements EMVTag {
 
     @Override
     public Tag getEMVTag(String value) {
-        // todo: remove usage of optional (and the tests too)
         try {
             //return Optional.ofNullable(Optional.of(tagRepository.findByName(value)).orElseThrow(
             //        () -> new ResourceNotFoundException(String.format("EMVTag %s not found.", value))));
             return tagRepository.findByName(value);
         } catch (NullPointerException e) {
             // change to default exception
-            throw new TagNotFoundException();
+            throw new TagNotFoundException("EMV Tag not found.");
         }
         //return Optional.empty();
     }
 
     @Override
     public List<Tag> getEMVTagByKeyword(String value) {
-        // todo: remove usage of optional (and the tests too)
         try {
             //returnedTag = Optional.ofNullable(Optional.of(tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value)).orElseThrow(
                     //() -> new ResourceNotFoundException(String.format("Description %s not found.", value))));
             //System.out.println("HEY" + returnedTag);
             return tagRepository.findAllByDescriptionContainingIgnoreCaseOrderById(value);
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             // change to default exception
-            throw new TagNotFoundException();
+            throw new TagNotFoundException("Tag(s) with keyword not found.");
         }
     }
 }

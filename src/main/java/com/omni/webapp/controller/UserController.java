@@ -43,7 +43,7 @@ public class UserController {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            throw new UserAlreadyExistsException();
+            throw new UserAlreadyExistsException(String.format("Username: %s already exists", user.getUserName()));
         }
         UserRestModelResponseDto responseDto = new UserRestModelResponseDto(username, email, companyName);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
