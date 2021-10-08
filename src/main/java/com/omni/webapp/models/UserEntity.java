@@ -50,6 +50,14 @@ public class UserEntity {
 
     }
 
+    public UserEntity(String userName, String email, String companyName, boolean isActive, String authorities) {
+        this.userName = userName;
+        this.email = email;
+        this.companyName = companyName;
+        this.isActive = isActive;
+        this.authorities = authorities;
+    }
+
 
     public String getUserName() {
         return userName;

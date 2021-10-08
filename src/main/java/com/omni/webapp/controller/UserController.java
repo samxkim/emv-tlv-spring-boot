@@ -66,11 +66,21 @@ public class UserController {
 
     @PutMapping
     public String updateUser() {
+        // todo:
+        // checks on update user
+        // checks for existing data
+        // exception handling
+        // permission roles (ROLE_USER, ROLE_ADMIN)
         return "Rest";
     }
 
     @DeleteMapping
     public String deleteUser() {
+        // todo:
+        // checks on delete user
+        // checks for existing data
+        // exception handling
+        // permission roles (ROLE_USER, ROLE_ADMIN)
         return "Rest";
     }
 }
