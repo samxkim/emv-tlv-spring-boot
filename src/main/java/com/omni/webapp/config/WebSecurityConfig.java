@@ -20,14 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
+    private final DBUserDetailsImpl userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEndpoint jwtAuthenticationEndpoint;
 
-    public WebSecurityConfig(UserRepository userRepository, UserDetailsService userDetailsService,
+    public WebSecurityConfig(DBUserDetailsImpl userDetailsService,
                              @Lazy JwtRequestFilter jwtRequestFilter, JwtAuthenticationEndpoint jwtAuthenticationEndpoint) {
-        this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.jwtAuthenticationEndpoint = jwtAuthenticationEndpoint;
@@ -88,9 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    //todo HERE Parameter 0 of constructor in com.omni.webapp.controller.UserController required a single bean, but 2 were found:
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new DBUserDetailsImpl(userRepository);
-    }
+//    //
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new DBUserDetailsImpl(userRepository);
+//    }
 }

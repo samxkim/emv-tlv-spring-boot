@@ -1,5 +1,6 @@
 package com.omni.webapp.service;
 
+import com.omni.webapp.controller.UserNotFoundException;
 import com.omni.webapp.models.UserEntity;
 import com.omni.webapp.models.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ public class DBUserDetailsImpl implements UserDetailsService {
         // 2. Convert/wrap the user to a UserDetails object and return it.
 
         UserEntity user = userRepository.findUserEntityByUserName(username);
+        if (user == null) throw new UserNotFoundException("User not found");
         List<SimpleGrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getAuthorities()));
         return new User(user.getUserName(), user.getEncryptedPassword(), grantedAuthorities);
     }
