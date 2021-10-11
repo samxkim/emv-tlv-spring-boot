@@ -25,6 +25,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.5.5'
 	implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
+	implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+	implementation 'org.springframework.security:spring-security-oauth2-jose'
 	//implementation 'org.springframework.data:spring-data-rest-hal-explorer:3.5.4'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.25'
 	implementation 'commons-logging:commons-logging:1.2'
@@ -37,6 +39,11 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test:5.5.1'
 	implementation('com.google.guava:guava:31.0.1-jre')
 	implementation 'com.payneteasy:ber-tlv:1.0-11'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+			//'org.bouncycastle:bcprov-jdk15on:1.60',
+			'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 	implementation group: 'io.github.binaryfoo', name: 'emv-bertlv', version: '0.1.8'
 
 }

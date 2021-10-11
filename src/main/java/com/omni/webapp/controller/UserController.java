@@ -1,14 +1,17 @@
 package com.omni.webapp.controller;
 
-import com.omni.webapp.models.UserEntity;
-import com.omni.webapp.models.UserRepository;
-import com.omni.webapp.models.UserRestModelRequestDto;
-import com.omni.webapp.models.UserRestModelResponseDto;
+import com.omni.webapp.models.*;
 import com.omni.webapp.service.DBUserDetailsImpl;
+import com.omni.webapp.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -26,18 +29,21 @@ public class UserController {
     private final DBUserDetailsImpl dbUserDetails;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
     @Autowired
     public UserController(DBUserDetailsImpl dbUserDetails,
                           BCryptPasswordEncoder bCryptPasswordEncoder,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          JwtUtils jwtUtils) {
         this.dbUserDetails = dbUserDetails;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping(path = "/register", produces = "application/json")
-    public ResponseEntity<UserRestModelResponseDto> createUser(@Valid @RequestBody UserRestModelRequestDto userRestModelRequestDto) throws UserAlreadyExistsException, UserPasswordException {
+    public ResponseEntity<UserRestModelResponse> createUser(@Valid @RequestBody UserRestModelRequest userRestModelRequestDto) throws UserAlreadyExistsException, UserPasswordException {
         if (!passwordValidLength(userRestModelRequestDto.getPassword())) {
             throw new UserPasswordException("Password is not valid.");
         }
@@ -52,19 +58,28 @@ public class UserController {
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("Email already exists");
         }
-        UserRestModelResponseDto responseDto = new UserRestModelResponseDto(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(), userRestModelRequestDto.getCompanyName());
+        UserRestModelResponse responseDto = new UserRestModelResponse(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(), userRestModelRequestDto.getCompanyName());
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/login", produces = "application/json", method = RequestMethod.GET)
-    public UserRestModelResponseDto getUser(@RequestParam(name = "username") String username,
-                                            @RequestParam(name = "password") String password) throws UserNotFoundException{
-        UserDetails user = dbUserDetails.loadUserByUsername(username);
-        Boolean doesPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
+    public ResponseEntity<JwtResponse> getUser(@RequestParam(name = "username") String username,
+                                               @RequestParam(name = "password") String password) throws UserNotFoundException{
+        try {
+            UserDetails user = dbUserDetails.loadUserByUsername(username);
+            Boolean doesPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            final String token = jwtUtils.generateToken(user);
+            return ResponseEntity.ok(new JwtResponse(token));
+        } catch (AuthenticationException e) {
+            System.out.println("Unable");
+        }
         return null;
     }
 
-    @PutMapping
+    @PutMapping(path = "/update", produces = "application/json")
     public String updateUser() {
         // todo:
         // checks on update user

@@ -1,11 +1,11 @@
 package com.omni.webapp.models;
 
-public class UserRestModelResponseDto {
+public class UserRestModelResponse {
     private String userName;
     private String email;
     private String companyName;
 
-    public UserRestModelResponseDto(String userName, String email, String companyName) {
+    public UserRestModelResponse(String userName, String email, String companyName) {
         this.userName = userName;
         this.email = email;
         this.companyName = companyName;
