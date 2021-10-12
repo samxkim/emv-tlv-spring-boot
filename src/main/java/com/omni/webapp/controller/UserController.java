@@ -67,7 +67,10 @@ public class UserController {
                                                @RequestParam(name = "password") String password) throws UserNotFoundException{
         try {
             UserDetails user = dbUserDetails.loadUserByUsername(username);
-            Boolean doesPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
+            boolean doesPasswordMatch = bCryptPasswordEncoder.matches(password, user.getPassword());
+            if (!doesPasswordMatch) {
+                throw new UserPasswordException("Incorrect User/Password.");
+            }
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);

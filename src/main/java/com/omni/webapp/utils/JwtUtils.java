@@ -16,6 +16,7 @@ import java.util.function.Function;
 // https://www.javainuse.com/spring/boot-jwt
 @Component
 public class JwtUtils {
+    String secret = "v0c2ioODCrNQVIaKcA31TYoyiRLyQaaPkBbMmAq3lf7HXWzqoPprrdcRa4kNyLxKjrpDjz3MXbN5LPRpCGIadg";
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -31,9 +32,8 @@ public class JwtUtils {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        //return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-        String secret = "v0c2ioODCrNQVIaKcA31TYoyiRLyQaaPkBbMmAq3lf7HXWzqoPprrdcRa4kNyLxKjrpDjz3MXbN5LPRpCGIadg";
-        return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        //return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -50,8 +50,8 @@ public class JwtUtils {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000))
-                // .signWith(SignatureAlgorithm.HS512, secret)
-                .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS512))
+                .signWith(SignatureAlgorithm.HS512, secret)
+                //.signWith(Keys.secretKeyFor(SignatureAlgorithm.HS512))
                 .compact();
     }
 

@@ -1,6 +1,8 @@
 package com.omni.webapp.controller;
 
 import com.omni.webapp.models.APIErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import javassist.bytecode.stackmap.TypeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,16 @@ public class RestAPIErrorResponse {
     public ResponseEntity<APIErrorResponse> resolveExistingUserException(UserAlreadyExistsException ex, HttpServletRequest request) {
         APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
                 "400", ex.getMessage(), "Please enter differently.");
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // todo change this from response body is empty to an exception (expired jwt)
+    @ExceptionHandler(value = {IllegalArgumentException.class, ExpiredJwtException.class, MalformedJwtException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<APIErrorResponse> resolveJwtUserException(Exception ex, HttpServletRequest request) {
+        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST,
+                "400", ex.getMessage(), "Please a valid Jwt token.");
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 

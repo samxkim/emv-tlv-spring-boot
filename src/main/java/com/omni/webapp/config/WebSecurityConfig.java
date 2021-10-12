@@ -58,8 +58,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/**")
                 //.antMatchers("/**")
                 .permitAll()
-                .antMatchers("/users/update")
-                .authenticated()
+                .mvcMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.PATCH, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.HEAD, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.TRACE, "/**").hasRole("ADMIN")
+                // When admin page is made
+                // .mvcMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
                 //.ignoringAntMatchers("/users/**");
