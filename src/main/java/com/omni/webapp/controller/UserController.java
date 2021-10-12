@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Date;
+
 import static com.omni.webapp.utils.PasswordUtils.passwordValidLength;
 
 @RestController
@@ -58,11 +60,6 @@ public class UserController {
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("Email already exists");
         }
-        //todo send response of how long till expiry(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000))
-        //todo change username details, change jwt token (renew), add emv tags, more tlv details, emv tag group details
-        //todo change endpoints to better match rest verbs
-        //todo email validation??
-        //todo frontend?? angular?? react?? vaadin??
         UserRestModelResponse responseDto = new UserRestModelResponse(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(), userRestModelRequestDto.getCompanyName());
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -80,12 +77,10 @@ public class UserController {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
             final String token = jwtUtils.generateToken(user);
-            return ResponseEntity.ok(new JwtResponse(token));
+            return ResponseEntity.ok(new JwtResponse(token, new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)));
         } catch (AuthenticationException e) {
-            System.out.println("Unable");
+            throw new UserNotFoundException("User not found or invalid");
         }
-        return null;
-        //todo send response of how long till expiry(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000))
     }
 
     @PutMapping(path = "/update", produces = "application/json")

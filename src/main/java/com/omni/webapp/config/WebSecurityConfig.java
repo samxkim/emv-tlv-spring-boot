@@ -48,12 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // Change this to change the urls that is available
         http.cors().and().csrf().disable();
-        //todo filters don't properly give good info back to the response
-        //todo change this to use spring 5.0 implementation of jwt
-        //https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2resourceserver-jwt-architecture
-//        http.oauth2ResourceServer((oauth2) -> oauth2
-//                        .authenticationEntryPoint(jwtAuthenticationEndpoint)
-//                        .jwt());
         http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEndpoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();

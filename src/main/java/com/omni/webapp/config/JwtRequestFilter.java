@@ -3,6 +3,7 @@ package com.omni.webapp.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omni.webapp.models.APIErrorResponse;
+import com.omni.webapp.models.JwtFilterErrorResponse;
 import com.omni.webapp.utils.JwtUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -62,12 +63,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-            // todo catching and sending a response like this sucks, hacky af
-        } catch (MalformedJwtException | UnsupportedJwtException | ExpiredJwtException | IllegalArgumentException e) {
-            APIErrorResponse errorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST, "400", e.getMessage(), "Please correct this.");
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            JwtFilterErrorResponse errorResponse = new JwtFilterErrorResponse(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(),
+                    "Please verify that the Jwt token is correct.");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.getWriter().write(convertObjectToJson(errorResponse));
-            System.out.println("Bad/expired token given.");
+        } catch (ExpiredJwtException e) {
+            JwtFilterErrorResponse errorResponse = new JwtFilterErrorResponse(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(),
+                    "Jwt token is expired.");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.getWriter().write(convertObjectToJson(errorResponse));
         }
         chain.doFilter(request, response);
     }
