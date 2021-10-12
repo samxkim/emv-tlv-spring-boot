@@ -1,6 +1,5 @@
 package com.omni.webapp.config;
 
-import com.omni.webapp.models.UserRepository;
 import com.omni.webapp.service.DBUserDetailsImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,10 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DBUserDetailsImpl userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
-    private final JwtAuthenticationEndpoint jwtAuthenticationEndpoint;
+    private final JwtAuthenticationEntrypoint jwtAuthenticationEndpoint;
 
     public WebSecurityConfig(DBUserDetailsImpl userDetailsService,
-                             @Lazy JwtRequestFilter jwtRequestFilter, JwtAuthenticationEndpoint jwtAuthenticationEndpoint) {
+                             @Lazy JwtRequestFilter jwtRequestFilter, JwtAuthenticationEntrypoint jwtAuthenticationEndpoint) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.jwtAuthenticationEndpoint = jwtAuthenticationEndpoint;
@@ -50,6 +48,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // Change this to change the urls that is available
         http.cors().and().csrf().disable();
+        //todo filters don't properly give good info back to the response
+        //todo change this to use spring 5.0 implementation of jwt
+        //https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2resourceserver-jwt-architecture
+//        http.oauth2ResourceServer((oauth2) -> oauth2
+//                        .authenticationEntryPoint(jwtAuthenticationEndpoint)
+//                        .jwt());
         http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEndpoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();

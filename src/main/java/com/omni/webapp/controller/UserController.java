@@ -58,6 +58,11 @@ public class UserController {
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("Email already exists");
         }
+        //todo send response of how long till expiry(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000))
+        //todo change username details, change jwt token (renew), add emv tags, more tlv details, emv tag group details
+        //todo change endpoints to better match rest verbs
+        //todo email validation??
+        //todo frontend?? angular?? react?? vaadin??
         UserRestModelResponse responseDto = new UserRestModelResponse(userRestModelRequestDto.getUserName(), userRestModelRequestDto.getEmail(), userRestModelRequestDto.getCompanyName());
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -80,6 +85,7 @@ public class UserController {
             System.out.println("Unable");
         }
         return null;
+        //todo send response of how long till expiry(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000))
     }
 
     @PutMapping(path = "/update", produces = "application/json")

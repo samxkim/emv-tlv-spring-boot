@@ -2,7 +2,10 @@ package com.omni.webapp.controller;
 
 import com.omni.webapp.models.APIErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import javassist.bytecode.stackmap.TypeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +47,9 @@ public class RestAPIErrorResponse {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // todo change this from response body is empty to an exception (expired jwt)
-    @ExceptionHandler(value = {IllegalArgumentException.class, ExpiredJwtException.class, MalformedJwtException.class})
+    // doesn't work since filters are processed before exceptionhandler
+    @ExceptionHandler(value = {IllegalArgumentException.class, ExpiredJwtException.class, MalformedJwtException.class,
+            SignatureException.class, UnsupportedJwtException.class, JwtException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseEntity<APIErrorResponse> resolveJwtUserException(Exception ex, HttpServletRequest request) {
@@ -65,7 +69,6 @@ public class RestAPIErrorResponse {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    // https://www.baeldung.com/spring-boot-bean-validation
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
