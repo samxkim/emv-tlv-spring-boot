@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.hibernate_sequence</OriginalElement>
+  <nodes>
+    <node x="123.99999999999999" y="390.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_group</node>
+    <node x="403.5" y="0.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.users</node>
+    <node x="193.5" y="184.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_groups_entity</node>
+    <node x="4.5" y="129.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag</node>
+    <node x="0.0" y="0.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_examples_entity</node>
+    <node x="0.0" y="513.0">03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.hibernate_sequence</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_group" target="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_groups_entity" relationship="REFERENCES">
+      <point x="29.25" y="-39.0" />
+      <point x="211.75" y="365.0" />
+      <point x="276.0" y="365.0" />
+      <point x="0.0" y="50.5" />
+    </edge>
+    <edge source="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_group" target="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag" relationship="REFERENCES">
+      <point x="-29.25" y="-39.0" />
+      <point x="153.25" y="365.0" />
+      <point x="89.0" y="365.0" />
+      <point x="0.0" y="105.5" />
+    </edge>
+    <edge source="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag" target="03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.tag_examples_entity" relationship="REFERENCES">
+      <point x="0.0" y="-105.5" />
+      <point x="0.0" y="39.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7691107644305772" showDependencies="false" x="310.5" y="284.5" />
+  <SelectedNodes>
+    <node>03e57fe0-2682-4d8c-ae55-3b85b16662a9.TABLE:mydb.hibernate_sequence</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

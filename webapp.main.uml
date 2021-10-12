@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Persistence</ID>
+  <OriginalElement>JavaeeElement:/71c81b80/webapp.main/webapp.main/jpa/JPA/PersistenceModel</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">TagGroupsEntity#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/TagGroupsEntity.java</node>
+    <node x="363.0" y="0.0">UserEntity#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/UserEntity.java</node>
+    <node x="162.0" y="11.0">TagExamplesEntity#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/TagExamplesEntity.java</node>
+    <node x="135.69371196754562" y="150.0">Tag#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/Tag.java</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Tag#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/Tag.java" target="TagExamplesEntity#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/TagExamplesEntity.java" relationship="RELATION">
+      <point x="0.0" y="-94.0" />
+      <point x="206.19371196754562" y="125.0" />
+      <point x="240.0" y="125.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="Tag#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/Tag.java" target="TagGroupsEntity#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/TagGroupsEntity.java" relationship="RELATION">
+      <point x="0.0" y="-94.0" />
+      <point x="206.19371196754562" y="125.0" />
+      <point x="71.0" y="125.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8679577464788732" showDependencies="false" x="274.0" y="169.0" />
+  <SelectedNodes>
+    <node>Tag#file://C:/Users/SamuelKim/Documents/webapp/src/main/java/com/omni/webapp/models/Tag.java</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Embeddables</Category>
+    <Category>Properties</Category>
+    <Category>Superclasses</Category>
+  </Categories>
+</Diagram>
+

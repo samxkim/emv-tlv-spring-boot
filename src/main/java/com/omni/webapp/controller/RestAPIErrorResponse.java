@@ -47,7 +47,7 @@ public class RestAPIErrorResponse {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // doesn't work since filters are processed before exceptionhandler
+    // doesn't work since filters are processed before exceptionhandler, just a bunch of catches (ugly) in the filter
     @ExceptionHandler(value = {IllegalArgumentException.class, ExpiredJwtException.class, MalformedJwtException.class,
             SignatureException.class, UnsupportedJwtException.class, JwtException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
