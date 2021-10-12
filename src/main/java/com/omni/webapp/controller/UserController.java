@@ -73,9 +73,9 @@ public class UserController {
             if (!doesPasswordMatch) {
                 throw new UserPasswordException("Incorrect User/Password.");
             }
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authentication);
+            //Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
+            //SecurityContext context = SecurityContextHolder.createEmptyContext();
+            //context.setAuthentication(authentication);
             final String token = jwtUtils.generateToken(user);
             return ResponseEntity.ok(new JwtResponse(token, new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)));
         } catch (AuthenticationException e) {

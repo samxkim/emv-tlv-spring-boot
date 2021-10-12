@@ -54,7 +54,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.GET, "/**")
-                //.antMatchers("/**")
                 .permitAll()
                 .mvcMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
@@ -62,6 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.HEAD, "/**").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.TRACE, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/users/register/").permitAll()
                 // When admin page is made
                 // .mvcMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
                 .and()
@@ -69,11 +70,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.ignoringAntMatchers("/users/**");
                 //.cors().disable()
                 //.headers().frameOptions().disable()
-                //.antMatchers("/admin")
-                //.hasAnyRole("ADMIN")
-                //.antMatchers("/user*")
-                //.permitAll()
-                //.and()
                 //.antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 //.formLogin()
                 //.loginPage("/login")
