@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, IllegalArgumentException, ExpiredJwtException, MalformedJwtException {
 
         final String requestTokenHeader = request.getHeader("Authorization");
 
@@ -42,19 +42,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
-            //todo don't catch these exceptions
-            try {
-                username = jwtUtils.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
-            }
-            catch (MalformedJwtException e) {
-                System.out.println("Not a valid.");
-            }
+            username = jwtUtils.getUsernameFromToken(jwtToken);
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
+            throw new MalformedJwtException("Does not begin with Bearer string.");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
