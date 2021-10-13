@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -83,13 +79,14 @@ public class UserController {
         }
     }
 
+    // todo implement update user/emv tags, delete user/emv tags, tests
     @PutMapping(path = "/update", produces = "application/json")
     public String updateUser() {
         // todo:
         // checks on update user
         // checks for existing data
         // exception handling
-        // permission roles (ROLE_USER, ROLE_ADMIN)
+        // permission roles (ROLE_ADMIN)
         return "Rest";
     }
 
@@ -99,7 +96,7 @@ public class UserController {
         // checks on delete user
         // checks for existing data
         // exception handling
-        // permission roles (ROLE_USER, ROLE_ADMIN)
+        // permission roles (ROLE_ADMIN)
         return "Rest";
     }
 }
