@@ -62,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.TRACE, "/**").hasRole("ADMIN")
                 //.mvcMatchers(HttpMethod.POST, "/users/").hasRole("ADMIN")
+
                 .mvcMatchers(HttpMethod.POST, "/users/register/").permitAll()
                 // When admin page is made
                 // .mvcMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
