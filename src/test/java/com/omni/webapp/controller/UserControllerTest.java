@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//todo: refactor with new authentication method (jwt token to access all services)
 class UserControllerTest {
 
     @Autowired

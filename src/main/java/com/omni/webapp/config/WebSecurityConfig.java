@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DBUserDetailsImpl userDetailsService;
@@ -50,23 +50,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEndpoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 // Maximum session tokens
-                .sessionManagement().maximumSessions(3);
+                //.sessionManagement().maximumSessions(3);
         http
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/**")
+                // To generate jwt token with authenticated user/pass
+                .mvcMatchers(HttpMethod.GET, "/api/v1/users/login")
                 .permitAll()
-                .mvcMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.PATCH, "/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.HEAD, "/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.TRACE, "/**").hasRole("ADMIN")
-                //.mvcMatchers(HttpMethod.POST, "/users/").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.POST, "/users/register/").permitAll()
-                // When admin page is made
-                // .mvcMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
+                // end of permit all
+                .anyRequest()
+                .authenticated()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
                 //.ignoringAntMatchers("/users/**");

@@ -8,6 +8,7 @@ import com.omni.webapp.utils.JwtUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -63,7 +64,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException e) {
             JwtFilterErrorResponse errorResponse = new JwtFilterErrorResponse(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(),
                     "Please verify that the Jwt token is correct.");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
