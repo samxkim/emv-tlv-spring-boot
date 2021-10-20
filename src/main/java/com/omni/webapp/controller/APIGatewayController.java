@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(value ="/api/v1",produces = "application/json")
 public class APIGatewayController {
@@ -51,8 +53,9 @@ public class APIGatewayController {
     }
 
     @RequestMapping(path = "/emvtagsearch", produces = "application/json", method = RequestMethod.GET)
-    public ResponseEntity<TagResponse> getEMVTag(@RequestParam("id") String id) throws TagNotFoundException {
+    public ResponseEntity<TagResponse> getEMVTag(@RequestParam("id") String id, HttpSession httpSession) throws TagNotFoundException {
         logger.info("Inputted variable: {}", id);
+        logger.info(httpSession.getId());
 
         Tag tag = emvTag.getEMVTag(id);
         if (tag == null) {

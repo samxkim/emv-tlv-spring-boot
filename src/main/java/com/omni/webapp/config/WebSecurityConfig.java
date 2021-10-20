@@ -50,7 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEndpoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // Maximum session tokens
+                .sessionManagement().maximumSessions(3);
         http
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.GET, "/**")
