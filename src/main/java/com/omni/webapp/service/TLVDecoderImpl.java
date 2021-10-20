@@ -1,5 +1,7 @@
 package com.omni.webapp.service;
 
+import com.omni.webapp.controller.InvalidTLVException;
+import com.omni.webapp.utils.TagTLVUtils;
 import io.github.binaryfoo.DecodedData;
 import io.github.binaryfoo.RootDecoder;
 import javassist.bytecode.stackmap.TypeData;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TLVDecoderImpl implements TLVDecoder{
@@ -31,7 +35,10 @@ public class TLVDecoderImpl implements TLVDecoder{
     }
 
     @Override
-    public List<List<String>> decodeTLVData(String data) {
+    public List<List<String>> decodeTLVData(String data) throws InvalidTLVException {
+        if (!TagTLVUtils.enteredInputValid(data)) {
+            throw new InvalidTLVException("Invalid character detected. Please enter data correctly.");
+        }
         List<DecodedData> decoded = new RootDecoder().decode(data, "emv", "constructed");
         List<List<String>> newList = new ArrayList<>();
         translateToReadableList(decoded, newList);

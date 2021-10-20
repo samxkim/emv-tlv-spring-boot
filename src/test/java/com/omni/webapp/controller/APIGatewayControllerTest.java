@@ -65,7 +65,7 @@ class APIGatewayControllerTest {
                 .willReturn(new Tag("41", "Country Code: Country code " +
                         "(encoding specified in ISO 3166-1) and optional national data"));
 
-        this.mockMvc.perform(get("/emvtagsearch")
+        this.mockMvc.perform(get("/api/v1/emvtagsearch")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("id", "41"))
                 .andExpect(status().isFound())
@@ -75,7 +75,7 @@ class APIGatewayControllerTest {
     @Test
     void whenInvalidInputTagReturn400() throws Exception {
         given(emvTag.getEMVTag("dsadsadasdsa")).willThrow(new TagNotFoundException("EMV Tag not found."));
-        this.mockMvc.perform(get("/emvtagsearch")
+        this.mockMvc.perform(get("/api/v1/emvtagsearch")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("id", "dsadsadasdsa"))
                 .andExpect(status().isBadRequest());
@@ -88,7 +88,7 @@ class APIGatewayControllerTest {
         given(emvTag.getEMVTagByKeyword("visa"))
         .willReturn(returnedTagList);
 
-        this.mockMvc.perform(get("/emvtagsearchdescription")
+        this.mockMvc.perform(get("/api/v1/emvtagsearchdescription")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("description", "visa"))
                 .andExpect(status().isFound())
@@ -102,7 +102,7 @@ class APIGatewayControllerTest {
         given(emvTag.getEMVTagByKeyword("dsadasdsadsada"))
                 .willReturn(returnedTagList);
 
-        this.mockMvc.perform(get("/emvtagsearchdescription")
+        this.mockMvc.perform(get("/api/v1/emvtagsearchdescription")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("description", "dsadasdsadsada"))
                 .andExpect(status().isBadRequest());
@@ -118,7 +118,7 @@ class APIGatewayControllerTest {
         given(tlvDecoder.decodeTLVData("6F1A840E315041592E5359532E4444463031A5088801025F2D02656E"))
                 .willReturn(list1);
 
-        this.mockMvc.perform(get("/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
+        this.mockMvc.perform(get("/api/v1/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isFound())
                         .andExpect(content().string(responseBody));
@@ -129,7 +129,7 @@ class APIGatewayControllerTest {
         String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Invalid TLV Data\",\"detail\":\"Please enter valid input.\"}";
         given(tlvDecoder.decodeTLVData("dsadsadadsa")).willThrow(new InvalidTLVException("Invalid TLV Data."));
 
-        this.mockMvc.perform(get("/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
+        this.mockMvc.perform(get("/api/v1/tlvdecoder/6F1A840E315041592E5359532E4444463031A5088801025F2D02656E")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(responseBody));

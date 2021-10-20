@@ -21,7 +21,7 @@ import static com.omni.webapp.utils.PasswordUtils.passwordValidLength;
 
 @RestController
 @Validated
-@RequestMapping("users")
+@RequestMapping("api/v1/users")
 public class UserController {
 
     private final DBUserDetailsImpl dbUserDetails;

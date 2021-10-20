@@ -88,7 +88,7 @@ class UserControllerTest {
         given(userRepository.save(user))
                 .willReturn(user);
 
-        this.mockMvc.perform(post("/users/register")
+        this.mockMvc.perform(post("/api/v1/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -114,7 +114,7 @@ class UserControllerTest {
         given(userRepository.existsByUserName(user.getUserName()))
                 .willReturn(true);
 
-        this.mockMvc.perform(post("/users/register")
+        this.mockMvc.perform(post("/api/v1/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -133,7 +133,7 @@ class UserControllerTest {
         String responseBody = "{\"status\":\"BAD_REQUEST\",\"errorCode\":\"400\",\"message\":\"Email already exists\",\"detail\":\"Please enter differently.\"}";
         doThrow(new UserAlreadyExistsException("Email already exists")).when(userRepository).save(any(UserEntity.class));
 
-        this.mockMvc.perform(post("/users/register")
+        this.mockMvc.perform(post("/api/v1/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value ="/api/v1",produces = "application/json")
 public class APIGatewayController {
     private static final Logger logger = LoggerFactory.getLogger(APIGatewayController.class);
 
@@ -41,6 +42,7 @@ public class APIGatewayController {
             TagResponse tagResponse = new TagResponse();
             tagResponse.setName(value.getName());
             tagResponse.setDescription(value.getDescription());
+            tagResponse.setUpdate_date(value.getUpdate_date());
             tagResponseList.add(tagResponse);
         }
 
@@ -78,7 +80,7 @@ public class APIGatewayController {
                 throw new InvalidTLVException("Invalid TLV");
             }
             return new ResponseEntity<>(tlvList, HttpStatus.FOUND);
-        } catch (Exception e) {
+        } catch (InvalidTLVException e) {
             throw new InvalidTLVException("Invalid TLV Data");
         }
     }
