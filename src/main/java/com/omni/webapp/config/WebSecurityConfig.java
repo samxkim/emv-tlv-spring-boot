@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DBUserDetailsImpl userDetailsService;
@@ -28,6 +28,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.jwtRequestFilter = jwtRequestFilter;
         this.jwtAuthenticationEndpoint = jwtAuthenticationEndpoint;
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            // Auth whitelist for swagger ui through spring filters
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-config.yaml",
+    };
 
     @Bean
     @Override
@@ -58,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // To generate jwt token with authenticated user/pass
                 .mvcMatchers(HttpMethod.GET, "/api/v1/users/login")
                 .permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                 // end of permit all
                 .anyRequest()
                 .authenticated()
