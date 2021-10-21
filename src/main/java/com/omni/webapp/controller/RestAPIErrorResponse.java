@@ -13,6 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -77,6 +78,14 @@ public class RestAPIErrorResponse {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(value = InsufficientAuthenticationException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<APIErrorResponse> authenticationException(Exception ex, WebRequest request) {
+        APIErrorResponse apiErrorResponse = new APIErrorResponse(HttpStatus.UNAUTHORIZED,
+                "401", new Date().toString(), ex.getMessage());
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(value = Exception.class)
