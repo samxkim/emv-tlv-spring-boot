@@ -1,0 +1,16 @@
+mysql -u root -p
+SET @@SQL_MODE = REPLACE(@@SQL_MODE, 'NO_ZERO_DATE', '');
+
+
+insert into mydb.users (id, authorities, company_name, created_date, email, encrypted_password, is_active, user_name)
+VALUES (1, 'ROLE_USER', 'dsa', '2021-10-07 14:23:04.004000', 'hey1@gmail.com', '$2a$10$w9ByRRS/EGQYqovJ6lCPf..rUopbq6bDXLJNjQPdERsSaqqR4OSTq', true, 'dsadasdsadasdsadsadas');
+
+http://localhost:8090/api/v1/users/login?username=dsadasdsadasdsadsadas&password=1peepe@epeepeeP
+
+
+{
+    "username": "dsadasdsadasdsadsadas",
+    "password": "1peepe@epeepeeP"
+}
+
+http://localhost:8080/api/v1/emvtagsearchdescription?description=visa
