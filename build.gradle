@@ -1,8 +1,7 @@
 plugins {
+	id 'java'
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	//id 'com.vaadin' version '0.14.6.0'
-	id 'java'
 	id "org.sonarqube" version "3.3"
 }
 
@@ -16,10 +15,6 @@ repositories {
 	}
 	mavenCentral()
 	maven { url 'https://jitpack.io' }
-}
-
-ext {
-	//set('vaadinVersion', "14.6.8")
 }
 
 dependencies {
@@ -49,12 +44,6 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 
-}
-
-dependencyManagement {
-	imports {
-		//mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
-	}
 }
 
 test {
