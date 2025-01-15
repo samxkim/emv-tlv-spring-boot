@@ -1,0 +1,86 @@
+# Template Java Gradle build
+
+# This template allows you to test and build your Java project with Gradle.
+# The workflow allows running tests, code checkstyle, and security scans on the default branch.
+
+# Prerequisites: appropriate project structure should exist in the repository.
+
+image: thyrlian/android-sdk:9.3
+
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: Build and Analyze (Develop Branch)
+          size: 2x # Double resources
+          runs-on: 'self.hosted' # Specify the self-hosted runner
+          deployment: test
+          caches:
+            - gradle
+          script:
+            - export GRADLE_OPTS='-Dorg.gradle.jvmargs="-Xmx2g -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"'
+            - |
+              cat <<EOF > local.properties
+              sdk.dir=${ANDROID_HOME}
+              BASYS_ACCESS_TOKEN_SECRET=${BASYS_ACCESS_TOKEN_SECRET}
+              BASYS_BIN_LOOKUP_SECRET=${BASYS_BIN_LOOKUP_SECRET}
+              BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET=${BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET}
+              PAYMENT_APPLICATION_PAXSTORE_APP_KEY=${PAYMENT_APPLICATION_PAXSTORE_APP_KEY}
+              PAYMENT_APPLICATION_PAXSTORE_APP_SECRET=${PAYMENT_APPLICATION_PAXSTORE_APP_SECRET}
+              PAX_INTEGRATION_PAXSTORE_APP_KEY=${PAX_INTEGRATION_PAXSTORE_APP_KEY}
+              PAX_INTEGRATION_APP_SECRET=${PAX_INTEGRATION_APP_SECRET}
+              EOF
+            - ./gradlew assembleDebug detektAll app:koverHtmlReportDebug lintReportDebug --build-cache --no-daemon
+          artifacts:
+            - app/build/outputs/**
+            - app/build/reports/**
+
+    main:
+      - step:
+          name: Build and Analyze (Main Branch)
+          runs-on: 'self.hosted' # Specify the self-hosted runner
+          caches:
+            - gradle
+          script:
+            - export GRADLE_OPTS='-Dorg.gradle.jvmargs="-Xmx2g -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"'
+            - |
+              cat <<EOF > local.properties
+              sdk.dir=${ANDROID_HOME}
+              BASYS_ACCESS_TOKEN_SECRET=${BASYS_ACCESS_TOKEN_SECRET}
+              BASYS_BIN_LOOKUP_SECRET=${BASYS_BIN_LOOKUP_SECRET}
+              BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET=${BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET}
+              PAYMENT_APPLICATION_PAXSTORE_APP_KEY=${PAYMENT_APPLICATION_PAXSTORE_APP_KEY}
+              PAYMENT_APPLICATION_PAXSTORE_APP_SECRET=${PAYMENT_APPLICATION_PAXSTORE_APP_SECRET}
+              PAX_INTEGRATION_PAXSTORE_APP_KEY=${PAX_INTEGRATION_PAXSTORE_APP_KEY}
+              PAX_INTEGRATION_APP_SECRET=${PAX_INTEGRATION_APP_SECRET}
+              EOF
+            - ./gradlew build --build-cache --no-daemon
+          artifacts:
+            - app/build/outputs/**
+            - app/build/reports/**
+  pull-requests:
+    develop:
+      - step:
+          name: Build and Analyze (Pull Request into Develop)
+          size: 2x # Double resources
+          runs-on: 'self.hosted' # Specify the self-hosted runner
+          deployment: test
+          caches:
+            - gradle
+          script:
+            - export GRADLE_OPTS='-Dorg.gradle.jvmargs="-Xmx2g -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"'
+            - |
+              cat <<EOF > local.properties
+              sdk.dir=${ANDROID_HOME}
+              BASYS_ACCESS_TOKEN_SECRET=${BASYS_ACCESS_TOKEN_SECRET}
+              BASYS_BIN_LOOKUP_SECRET=${BASYS_BIN_LOOKUP_SECRET}
+              BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET=${BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET}
+              PAYMENT_APPLICATION_PAXSTORE_APP_KEY=${PAYMENT_APPLICATION_PAXSTORE_APP_KEY}
+              PAYMENT_APPLICATION_PAXSTORE_APP_SECRET=${PAYMENT_APPLICATION_PAXSTORE_APP_SECRET}
+              PAX_INTEGRATION_PAXSTORE_APP_KEY=${PAX_INTEGRATION_PAXSTORE_APP_KEY}
+              PAX_INTEGRATION_APP_SECRET=${PAX_INTEGRATION_APP_SECRET}
+              EOF
+            - ./gradlew assembleDebug detektAll --build-cache --no-daemon
+          artifacts:
+            - app/build/outputs/**
+            - app/build/reports/**

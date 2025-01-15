@@ -1,6 +1,6 @@
-node_modules
 HELP.md
 .gradle
+.gradle/**
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -36,3 +36,15 @@ out/
 
 ### VS Code ###
 .vscode/
+local.properties
+
+### Kotlin
+.kotlin
+
+### Etc ###
+.DS_Store
+*.apk
+*.ap_
+*.dex
+*.class
+proguard/

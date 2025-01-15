@@ -1,0 +1,178 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+  branches:
+    include:
+      - develop
+      - main
+pr:
+  - develop
+  - main
+
+pool:
+  vmImage: 'macOS-latest'
+
+variables:
+  isPR: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
+  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+
+steps:
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "sdk.dir=$(ANDROID_HOME)" > $(Build.Repository.LocalPath)/local.properties
+        echo "BASYS_ACCESS_TOKEN_SECRET=$(BASYS_ACCESS_TOKEN_SECRET)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "BASYS_BIN_LOOKUP_SECRET=$(BASYS_BIN_LOOKUP_SECRET)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET=$(BASYS_VIRTUAL_TERMINAL_CLIENT_SECRET)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "PAYMENT_APPLICATION_PAXSTORE_APP_KEY=$(PAYMENT_APPLICATION_PAXSTORE_APP_KEY)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "PAYMENT_APPLICATION_PAXSTORE_APP_SECRET=$(PAYMENT_APPLICATION_PAXSTORE_APP_SECRET)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "PAX_INTEGRATION_PAXSTORE_APP_KEY=$(PAX_INTEGRATION_PAXSTORE_APP_KEY)" >> $(Build.Repository.LocalPath)/local.properties
+        echo "PAX_INTEGRATION_APP_SECRET=$(PAX_INTEGRATION_APP_SECRET)" >> $(Build.Repository.LocalPath)/local.properties
+    displayName: 'Create local.properties'
+
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
+
+  - task: SonarQubePrepare@5
+    condition: ne(variables['isPR'], 'true')
+    inputs:
+      SonarQube: 'sonar-basyspayment-android'
+      scannerMode: 'Other'
+      extraProperties: |
+        # Additional properties that will be passed to the scanner,
+        # Put one key=value per line, example:
+        # sonar.exclusions=**/*.bin
+        sonar.projectKey=basyspayment-android.develop
+        sonar.projectName=basyspayment-android.develop
+        sonar.sarifReportPaths=$(Build.Repository.LocalPath)/build/reports/detekt/merge.sarif
+
+  - powershell: |
+      $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w/,-.]*"\,?'
+      Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
+    condition: ne(variables['isPR'], 'true')
+  
+  - task: Cache@2
+    inputs:
+      key: 'gradleCachev1 | "$(Agent.OS)" | **/build.gradle.kts' # Swap build.gradle.kts for build.gradle when using Groovy
+      restoreKeys: |
+        gradleCachev1 | "$(Agent.OS)"
+        gradleCachev1
+      path: $(GRADLE_USER_HOME)
+    displayName: Configure gradle caching
+    continueOnError: true # Ensure the pipeline continues even if cache restore fails
+
+  - task: Gradle@2
+    condition: ne(variables['isPR'], 'false')
+    inputs:
+      gradleWrapperFile: '$(Build.Repository.LocalPath)/gradlew'
+      workingDirectory: '$(Build.Repository.LocalPath)'
+      # Currently only building what's necessary for debug, release APK's will need additional steps
+      tasks: 'assembleDebug detektAll app:koverHtmlReportDebug lintReportDebug'
+      publishJUnitResults: true
+      testResultsFiles: '**/TEST-*.xml'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.17'
+      jdkArchitectureOption: 'x64'
+      gradleOptions: '-Xmx3072m'
+      options: '--build-cache'
+    displayName: 'Gradle Build'
+
+  - task: Gradle@2
+    condition: ne(variables['isPR'], 'true')
+    inputs:
+      gradleWrapperFile: '$(Build.Repository.LocalPath)/gradlew'
+      workingDirectory: '$(Build.Repository.LocalPath)'
+      # Currently only building what's necessary for debug, release APK's will need additional steps
+      # Disabled dependencyCheckAggregate
+      tasks: 'assembleDebug detektAll app:koverHtmlReportDebug lintReportDebug'
+      publishJUnitResults: true
+      testResultsFiles: '**/TEST-*.xml'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.17'
+      jdkArchitectureOption: 'x64'
+      gradleOptions: '-Xmx3072m'
+      options: '--build-cache'
+      sonarQubeRunAnalysis: true
+      sqGradlePluginVersionChoice: 'specify'
+      sonarQubeGradlePluginVersion: '5.0.0.4638' # https://plugins.gradle.org/plugin/org.sonarqube
+    displayName: 'Gradle Build with SonarQube Analysis'
+
+#  - task: Gradle@2
+#    condition: ne(variables['isPR'], 'true')
+#    inputs:
+#      gradleWrapperFile: '$(Build.Repository.LocalPath)/gradlew'
+#      workingDirectory: '$(Build.Repository.LocalPath)'
+#      # Currently only building what's necessary for debug, release APK's will need additional steps
+#      tasks: 'dependencyCheckAggregate'
+#      publishJUnitResults: true
+#      testResultsFiles: '**/TEST-*.xml'
+#      javaHomeOption: 'JDKVersion'
+#      jdkVersionOption: '1.17'
+#      jdkArchitectureOption: 'x64'
+#      gradleOptions: '-Xmx3072m'
+#    env:
+#      NVD_API_KEY: $(NVD_API_KEY)
+#    displayName: 'Dependency Check Gradle Task'
+
+  - script: |
+      # stop the Gradle daemon to ensure no files are left open (impacting the save cache operation later)
+      ./gradlew --stop
+    displayName: 'Stop Gradle Daemon'
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Ensure the target directory exists
+        mkdir -p $(Build.ArtifactStagingDirectory)
+        
+        echo "Copying build/outputs and build/reports directories to $(Build.ArtifactStagingDirectory)"
+        
+        # Find and copy all build/outputs and build/reports directories
+        find $(Build.Repository.LocalPath) -type d \( -path "*/build/outputs" -o -path "*/build/reports" \) | while read dir; do
+          echo "Processing directory: $dir"
+          dest_dir="$(Build.ArtifactStagingDirectory)${dir#$(Build.Repository.LocalPath)}"
+          mkdir -p "$dest_dir"
+          cp -r "$dir/." "$dest_dir"
+          echo "Copied $dir to $dest_dir"
+        done
+
+        # Zip the contents of the artifact staging directory
+        cd $(Build.ArtifactStagingDirectory)
+        zip -r module_build_reports_and_outputs.zip .
+        cd -
+
+        # Check the contents of the staging directory for debugging
+        echo "Contents of $(Build.ArtifactStagingDirectory):"
+        ls -R $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy and Zip Outputs and Reports from All Modules'
+    continueOnError: true # Ensure the pipeline continues even if cache restore fails
+
+  # Fallback mechanism to regenerate files if cache restore failed
+  - task: Bash@3
+    condition: failed()
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "Cache miss detected, regenerating necessary files..."
+        ./gradlew clean build
+    displayName: 'Fallback - Regenerate Necessary Files'
+  
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/module_build_reports_and_outputs.zip'
+      artifactName: 'ModuleBuildReportsAndOutputs'
+      publishLocation: 'container'
+    displayName: 'Publish Build Artifacts'
+
+  - task: SonarQubePublish@5
+    condition: ne(variables['isPR'], 'true')
+    inputs:
+      pollingTimeoutSec: '300'
